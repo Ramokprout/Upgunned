@@ -239,9 +239,8 @@ namespace d3dhook {
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
                     auto PlayerController = LocalPlayerWrapper::getController();
                     PRINT_PTR(PlayerController, "PlayerController")
-                    auto CameraManager = LocalPlayerWrapper::getPlayerCameraManager(PlayerController);
-                    PRINT_PTR(CameraManager, "CameraManager")
-                    auto FOV = ue4::GetFovAngle(CameraManager);
+                    PRINT_PTR(PlayerController->PlayerCameraManager, "CameraManager")
+                    auto FOV = ue4::GetFovAngle(PlayerController->PlayerCameraManager);
                     printf("FOV : %f\n", FOV);
                     printf("Global FOV : %d\n", Globals::FOV);
                     ue4::FOV(PlayerController, FOV);

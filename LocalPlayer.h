@@ -9,9 +9,6 @@
 #include "engine.h"
 struct LocalPlayerWrapper {
 
-	static void* getPlayerCameraManager(PlayerController* PlayerController) {
-		return PlayerController->PlayerCameraManager;
-	}
 
 	static LocalPlayer* getLocalPlayer() {
 		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);
