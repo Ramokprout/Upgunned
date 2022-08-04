@@ -36,26 +36,6 @@ public :
 	static const int FOV = 0x2776D20;
 	static const int GetFovAngle = 0x27782C0;
 
-	static const uintptr_t Levels = 0x138;
-	static const uintptr_t LocalPlayers = 0x38;
-	static const uintptr_t OwningGameInstance = 0x180;
-	static const uintptr_t PersistentLevel = 0x30;
-	static const uintptr_t ActorCluster = 0xD8;
-	static const uintptr_t Actors = 0x28;
-	static const uintptr_t PendingLevelPlayerControllerClass = 0x98;
-	static const uintptr_t AcknowledgedPawn = 0x2A0;
-	static const uintptr_t PlayerController = 0x30;
-	static const uintptr_t GameViewport = 0x780;
-	static const uintptr_t GameViewportClient = 0x00001427;
-	static const uintptr_t ViewportConsole = 0x40;
-	static const uintptr_t Role = 0xF0;
-	static const uintptr_t GameInstance = 0xDE8;
-	static const uintptr_t World = 0x78;
-	static const uintptr_t ConsoleClass = 0xF0;
-	static const uintptr_t CheatManager = 0x338;
-	static const uintptr_t NetDriver = 0x38;
-	static const uintptr_t PlayerCameraManager = 0x2B8;
-
 
 	inline void Initialize() {
 				uintptr_t Address = 0;
