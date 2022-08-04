@@ -1,11 +1,10 @@
 #pragma once
 
-#ifndef __PRIMITIVES_UE4_STRUCTS__
-#define __PRIMITIVES_UE4_STRUCTS__
+#ifndef __UPGUN__STRUCTS__
+#define __UPGUN__STRUCTS__
 
 class UObject;
 
-// Created with ReClass.NET 1.2 by KN4CK3R
 
 class UWorld
 {

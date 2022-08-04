@@ -3,7 +3,7 @@
 #ifndef __TYPES_H__
 #define __TYPES_H__
 #include "pch.h"
-#include "primitivesUE4Structs.h"
+#include "upgunstructs.h"
 
 typedef HRESULT(__stdcall* Present)(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);

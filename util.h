@@ -3,7 +3,7 @@
 #define __UTIL_H__
 
 #include "Native.h"
-#include "primitivesUE4Structs.h"
+#include "upgunstructs.h"
 
 static void Error(std::string error, bool bExit = false)
 {

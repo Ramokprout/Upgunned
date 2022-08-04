@@ -161,7 +161,7 @@
     <ClInclude Include="LocalPlayer.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="primitivesUE4Structs.h" />
+    <ClInclude Include="upgunstructs.h" />
     <ClInclude Include="Native.h" />
     <ClInclude Include="ue4.h" />
     <ClInclude Include="ue4structs.h" />
