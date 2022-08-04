@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+/.vs/Upgunned2
+/x64/Release
