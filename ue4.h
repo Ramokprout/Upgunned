@@ -2,12 +2,21 @@
 #ifndef __UE4__H__
 #define __UE4__H__
 
-#include "types.h"
+#include "Native.h"
 #include "ue4structs.h"
 #include "util.h"
 #include "offsets.h"
-#include "Globals.h"
+#include "offsets.h"
 #include "LocalPlayer.h"
+#include "engine.h"
+
+struct SpawnObject_Params
+{
+	UObject* ObjectClass;
+	UObject* Outer;
+	UObject* ReturnValue;
+};
+
 class ue4
 {
 private :
@@ -15,17 +24,6 @@ private :
 		return Native::StaticFindObject(nullptr, nullptr, ObjectName, false);
 	}
 public:
-
-	static void* GetWorld() {
-		auto UWProxy = (UWorldProxy*)Native::UWorld;
-		return UWProxy->World;
-	}
-
-	static void* GetEngine() {
-		auto GEProxy = (GEngineProxy*)Native::GEngine;
-		return GEProxy->GEngine;
-	}
-
 	static void FOV(void* PlayerController, float newFOV) 
 	{
 		auto fn = ue4::StaticFindObject<UObject>(L"Engine.PlayerController:FOV");
@@ -37,7 +35,9 @@ public:
 		params.NewFOV = newFOV;
 
 		Native::oProcessEvent(PlayerController, fn, &params);
-	//	Native::FOV(PlayerController, newFOV);
+
+		//not working for some reasons
+		//todo: solve the problem
 	}
 
 	static float GetFovAngle(void* CameraManager) {
@@ -45,7 +45,7 @@ public:
 	}
 
 	static bool IsServer() {
-		auto NetDriver = (void*)ReadPointer(GetWorld(), offsetsManager::NetDriver);
+		auto NetDriver = UpgunnedEngine::GetWorld()->NetDriver;
 		if (NetDriver == nullptr) return false;
 		bool isServer = Native::IsServer(NetDriver);
 		//printf("Is Server : %d\n", isServer);
@@ -62,31 +62,24 @@ public:
 	}
 
 	static void BuildConsole() {
-		auto Engine = GetEngine();
-		auto ConsoleClass = (void*)ReadPointer(Engine, offsetsManager::ConsoleClass);
-		auto GameViewPort = (void*)ReadPointer(Engine, offsetsManager::GameViewport);
+		auto Engine = UpgunnedEngine::GetEngine();
 
-		void* ViewportConsoleAddress = reinterpret_cast<void*>((DWORD_PTR)GameViewPort + offsetsManager::ViewportConsole);
+		PRINT_PTR(Engine->ConsoleClass, "ConsoleClass");
+		PRINT_PTR(Engine->GameViewport, "GameViewport");
 
-		PRINT_PTR(ConsoleClass, "ConsoleClass");
-		PRINT_PTR(GameViewPort, "GameViewPort");
-
-		SpawnObject_Params params{
-		(UObject*)ConsoleClass,
-		(UObject*)GameViewPort
+		SpawnObject_Params params
+		{
+			(UObject*)Engine->ConsoleClass,
+			(UObject*)Engine->GameViewport 
 		};
-
-
 
 		auto ret = ue4::EasySpawnObject(params);
 
-		WritePointerRaw((LPVOID*)ViewportConsoleAddress, ret);
+		WritePointerRaw((LPVOID*)&Engine->GameViewport->ViewportConsole, ret);
 	}
 
 	static void BuildCheatManager() {
-		auto Controller = LocalPlayerWrapper::getController(Globals::LocalPlayer);
-		PRINT_PTR(Controller, "Controller");
-		void* CheatManagerAddress = reinterpret_cast<void*>((DWORD_PTR)Controller + offsetsManager::CheatManager);
+		auto Controller = LocalPlayerWrapper::getController();
 
 		auto CheatManagerClass = ue4::StaticFindObject<UObject>(L"Engine.CheatManager");
 
@@ -97,7 +90,7 @@ public:
 
 		auto ret = ue4::EasySpawnObject(params);
 
-		WritePointerRaw((LPVOID*)CheatManagerAddress, ret);
+		WritePointerRaw((LPVOID*)&Controller->CheatManager, ret);
 	}
 
 	template <typename T>

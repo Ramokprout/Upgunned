@@ -10,7 +10,6 @@
 
 
 namespace Globals {
-	inline PVOID* LocalPlayer;
 	inline HWND window = NULL;
 	inline WNDPROC oWndProc;
 	inline ID3D11Device* pDevice = NULL;

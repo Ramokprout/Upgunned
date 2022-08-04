@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="d3dhook.h" />
+    <ClInclude Include="engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="guirenderer.h" />
@@ -161,14 +162,13 @@
     <ClInclude Include="offsets.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="primitivesUE4Structs.h" />
-    <ClInclude Include="types.h" />
+    <ClInclude Include="Native.h" />
     <ClInclude Include="ue4.h" />
     <ClInclude Include="ue4structs.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="offsets.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
@@ -181,8 +181,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ue4.cpp" />
-    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

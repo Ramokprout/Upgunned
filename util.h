@@ -2,7 +2,7 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include "types.h"
+#include "Native.h"
 #include "primitivesUE4Structs.h"
 
 static void Error(std::string error, bool bExit = false)
@@ -13,8 +13,6 @@ static void Error(std::string error, bool bExit = false)
 		exit(0);
 }
 
-#define UPDATE_LOCAL_PLAYER \
-	Globals::LocalPlayer = (PVOID*)getLocalPlayer();
 
 #define PRINT_PTR(ptr, name) \
 			printf("%s ptr : %p\n", name, (void*)ptr);
@@ -43,13 +41,9 @@ static void Error(std::string error, bool bExit = false)
 
 #define ReadPointer(base, offset) (*(PVOID *)(((PBYTE)base + offset)))
 
-class util
-{
-public:
-	static void CreateConsole();
-
-	static std::string FNameToString(void* fName);
-
-};
+#define CreateConsole \
+	AllocConsole(); \
+	FILE* File; \
+	freopen_s(&File, "CONOUT$", "w", stdout);
 
 #endif

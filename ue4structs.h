@@ -3,18 +3,60 @@
 #ifndef __UE4STRUCTS__
 #define __UE4STRUCTS__
 #include "pch.h"
-#include "types.h"
+#include "Native.h"
 
 
-enum ENetRole {
-	ROLE_None,
-	ROLE_SimulatedProxy,
-	ROLE_AutonomousProxy,
-	ROLE_Authority,
-	ROLE_MAX
+
+template<class T>
+struct TArray {
+	friend struct FString;
+
+public:
+	inline TArray() {
+		Data = nullptr;
+		Count = Max = 0;
+	};
+
+	inline INT Num() const {
+		return Count;
+	};
+
+	inline T& operator[](INT i) {
+		return Data[i];
+	};
+
+	inline BOOLEAN IsValidIndex(INT i) {
+		return i < Num();
+	}
+
+public:
+	T* Data;
+	INT Count;
+	INT Max;
 };
 
+struct FString : public TArray<WCHAR> {
+	FString() {
+		Data = nullptr;
+		Max = Count = 0;
+	}
 
+	FString(LPCWSTR other) {
+		Max = Count = static_cast<INT>(wcslen(other));
+
+		if (Count) {
+			Data = const_cast<PWCHAR>(other);
+		}
+	};
+
+	inline BOOLEAN IsValid() {
+		return Data != nullptr;
+	}
+
+	inline PWCHAR c_str() {
+		return Data;
+	}
+};
 
 class UClass {
 public:
@@ -446,24 +488,6 @@ struct UField : UObject
 	UField* Next;
 	void* padding_01;
 	void* padding_02;
-};
-
-
-struct UConsole;
-
-struct UGameViewportClient
-{
-	char unknown1[0x40];
-	UConsole* ViewportConsole;
-};
-
-
-class UEngine : public UObject
-{
-	char unknown1[0xF8];
-	UClass* ConsoleClass;
-	char unknown2[0x688];
-	UGameViewportClient* GameViewportClient;
 };
 
 class UFunction : public UObject {

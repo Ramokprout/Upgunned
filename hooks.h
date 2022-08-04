@@ -2,7 +2,7 @@
 
 #ifndef __HOOKS_H__
 #define __HOOKS_H__
-#include "types.h"
+#include "Native.h"
 #include "ue4structs.h"
 #include "util.h"
 

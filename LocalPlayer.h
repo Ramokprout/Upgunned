@@ -3,9 +3,10 @@
 #ifndef __LOCALPLAYER__
 #define __LOCALPLAYER__
 
-#include "types.h"
+#include "Native.h"
 #include "offsets.h"
-
+#include "ue4.h"
+#include "engine.h"
 struct LocalPlayerWrapper {
 
 	static void* getPlayerCameraManager(void* PlayerController) {
@@ -13,28 +14,19 @@ struct LocalPlayerWrapper {
 		return PlayerCameraManager;
 	}
 
-	static void* getLocalPlayer() {
-		auto UWproxy = (UWorldProxy*)Native::UWorld;
-		auto OwningGameInstance = ReadPointer(UWproxy->World, offsetsManager::OwningGameInstance);
-		auto LocalPlayers = (void*)ReadPointer(OwningGameInstance, offsetsManager::LocalPlayers);
-		auto LocalPlayer = (void*)ReadPointer(LocalPlayers, 0x0);
+	static LocalPlayer* getLocalPlayer() {
+		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);
 
-		return LocalPlayer;
+		return (LocalPlayer*)pLocalPlayer;
 	}
 
-	static void* getController(void* localPlayer) {
-		UPDATE_LOCAL_PLAYER
-		auto Controller = (void*)ReadPointer(localPlayer, offsetsManager::PlayerController);
-		return Controller;
+	static PlayerController* getController() {
+		auto localPlayer = getLocalPlayer();
+		return (PlayerController*)localPlayer->PlayerController;
 	}
 
-	static void* getPawn(void* Controller) {
-		auto Pawn = Native::K2_GetPawn(Controller);
-		if (IsBadReadPtr(Pawn, sizeof(Pawn))) {
-			Pawn = (void*)ReadPointer(Controller, offsetsManager::AcknowledgedPawn);
-		}
-
-		return Pawn;
+	static void* getPawn(PlayerController* Controller) {
+		return Controller->Character;
 	}
 };
 

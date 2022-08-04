@@ -9,6 +9,41 @@ typedef HRESULT(__stdcall* Present)(IDXGISwapChain* pSwapChain, UINT SyncInterva
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 typedef uintptr_t PTR;
 
+typedef struct {
+	float X, Y, Z;
+} FVector;
+
+typedef struct {
+	float X, Y;
+} FVector2D;
+
+typedef struct {
+	float Pitch;
+	float Yaw;
+	float Roll;
+} FRotator;
+
+typedef struct {
+	FVector Location;
+	FRotator Rotation;
+	float FOV;
+	float OrthoWidth;
+	float OrthoNearClipPlane;
+	float OrthoFarClipPlane;
+	float AspectRatio;
+} FMinimalViewInfo;
+
+typedef struct {
+	float M[4][4];
+} FMatrix;
+
+typedef struct {
+	float A;
+	float R;
+	float G;
+	float B;
+} FLinearColor;
+
 namespace Native {
 
 	inline void(__fastcall* oProcessEvent)(void*, void*, void*);
@@ -27,7 +62,7 @@ namespace Native {
 	//inline void(__fastcall* FOV)(void*, float);
 	inline Present oPresent;
 	inline HRESULT(*oResize)(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) = nullptr;
-	inline PVOID* UWorld;
+	//inline PVOID* UWorld;
 	inline PVOID* GEngine;
 	inline PVOID* GObjects;
 	//inline PVOID* EngineProxy;

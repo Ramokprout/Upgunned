@@ -6,11 +6,9 @@
 #include "LocalPlayer.h"
 
 DWORD WINAPI Main(HMODULE lpParam) {
-    util::CreateConsole();
+    CreateConsole
     offsetsManager* offsetManager = new offsetsManager();
     offsetManager->Initialize();
-    auto LocalPlayer = LocalPlayerWrapper::getLocalPlayer();
-    Globals::LocalPlayer = (PVOID*)LocalPlayer;
     renderer::Initialize();
     return 0;
 }
