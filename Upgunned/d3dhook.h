@@ -208,11 +208,18 @@ namespace d3dhook {
                     PRINT_PTR(localPlayer, "LocalPlayer");
                 }
 
+
                 
 
                 if (ImGui::Button("Print names")) {
                     auto world = UpgunnedEngine::GetWorld();
+                    
                     wprintf(L"UWorld name : %s\n",((UObject*)world)->GetFullName().c_str());
+                    wprintf(L"localPlayer name : %s\n",((UObject*)localPlayer)->GetFullName().c_str());
+                    wprintf(L"Controller name : %s\n",((UObject*)localPlayer->PlayerController)->GetFullName().c_str());
+                    wprintf(L"Pawn name : %s\n",((UObject*)localPlayer->PlayerController->Character)->GetFullName().c_str());
+                    wprintf(L"PawnState name : %s\n",((UObject*)localPlayer->PlayerController->Character->PlayerState)->GetFullName().c_str());
+                    //wprintf(L"Playername : %s\n",ue4::GetPlayerName(localPlayer->PlayerController->Character->PlayerState).c_str());
                 }
 
                 if (ImGui::Button("Print Actors Number")) {
@@ -235,15 +242,13 @@ namespace d3dhook {
             //        printf("Num : %d\n", ActorCount);
                 }
 
+
+            }
+            else if(Globals::tab == 2) {
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
-                    auto PlayerController = localPlayer->PlayerController;
-                    PRINT_PTR(PlayerController, "PlayerController")
-                    PRINT_PTR(PlayerController->PlayerCameraManager, "CameraManager")
-                    auto FOV = ue4::GetFovAngle(PlayerController->PlayerCameraManager);
-                    printf("FOV : %f\n", FOV);
-                    printf("Global FOV : %d\n", Globals::FOV);
-                    ue4::FOV(PlayerController, FOV);
-                  //  Globals::FOV = (int)FOV;
+                    auto LocalPlayer = ue4::getLocalPlayer();
+                    auto cam = LocalPlayer->PlayerController->Character->Camera;
+                    cam->FieldOfView = (float)Globals::FOV;
                 }
             }
 

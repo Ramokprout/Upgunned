@@ -30,22 +30,6 @@ public:
 		return (LocalPlayer*)pLocalPlayer;
 	}
 
-	static void FOV(void* PlayerController, float newFOV) 
-	{
-		auto fn = ue4::StaticFindObject<UObject>(L"Engine.PlayerController:FOV");
-		
-		struct {
-			float NewFOV;
-		} params;
-
-		params.NewFOV = newFOV;
-
-		Native::oProcessEvent(PlayerController, fn, &params);
-
-		//not working for some reasons
-		//todo: solve the problem
-	}
-
 	static float GetFovAngle(void* CameraManager) {
 		return Native::GetFovAngle(CameraManager);
 	}
@@ -136,7 +120,18 @@ public:
 		return params.ReturnValue;
 	}
 
+/*	static std::wstring GetPlayerName(PlayerState* playerState) {
+		//Function /Script/
+		auto fn = ue4::StaticFindObject<UFunction>(L"Engine.PlayerState:GetPlayerName");
 
+		struct {
+			FString ReturnValue;
+		} params = { 0 };
+
+		Native::oProcessEvent((void*)playerState, fn, &params);
+
+		return params.ReturnValue.c_str();
+	}*/
 };
 
 #endif
