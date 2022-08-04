@@ -9,9 +9,8 @@
 #include "engine.h"
 struct LocalPlayerWrapper {
 
-	static void* getPlayerCameraManager(void* PlayerController) {
-		auto PlayerCameraManager = (void*)ReadPointer(PlayerController, offsetsManager::PlayerCameraManager);
-		return PlayerCameraManager;
+	static void* getPlayerCameraManager(PlayerController* PlayerController) {
+		return PlayerController->PlayerCameraManager;
 	}
 
 	static LocalPlayer* getLocalPlayer() {
