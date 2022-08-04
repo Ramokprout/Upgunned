@@ -7,7 +7,6 @@
 #include "util.h"
 #include "offsets.h"
 #include "offsets.h"
-#include "LocalPlayer.h"
 #include "engine.h"
 
 struct SpawnObject_Params
@@ -24,6 +23,13 @@ private :
 		return Native::StaticFindObject(nullptr, nullptr, ObjectName, false);
 	}
 public:
+
+	static LocalPlayer* getLocalPlayer() {
+		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);
+
+		return (LocalPlayer*)pLocalPlayer;
+	}
+
 	static void FOV(void* PlayerController, float newFOV) 
 	{
 		auto fn = ue4::StaticFindObject<UObject>(L"Engine.PlayerController:FOV");
@@ -79,18 +85,18 @@ public:
 	}
 
 	static void BuildCheatManager() {
-		auto Controller = LocalPlayerWrapper::getController();
+		auto LocalPlayer = ue4::getLocalPlayer();
 
 		auto CheatManagerClass = ue4::StaticFindObject<UObject>(L"Engine.CheatManager");
 
 		SpawnObject_Params params{
 			CheatManagerClass,
-			(UObject*)Controller
+			(UObject*)LocalPlayer->PlayerController
 		};
 
 		auto ret = ue4::EasySpawnObject(params);
 
-		WritePointerRaw((LPVOID*)&Controller->CheatManager, ret);
+		WritePointerRaw((LPVOID*)&LocalPlayer->PlayerController->CheatManager, ret);
 	}
 
 	template <typename T>

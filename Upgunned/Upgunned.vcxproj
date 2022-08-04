@@ -159,7 +159,6 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="guirenderer.h" />
     <ClInclude Include="hooks.h" />
-    <ClInclude Include="LocalPlayer.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="upgunstructs.h" />

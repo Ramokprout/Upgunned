@@ -4,7 +4,6 @@
 #include "Globals.h"
 #include "ue4.h"
 #include "guirenderer.h"
-#include "LocalPlayer.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -154,7 +153,7 @@ namespace d3dhook {
             ImGui::Begin("Upgunned", &Globals::showMenu, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize);
 
             bool isServer = ue4::IsServer();
-            
+            auto localPlayer = ue4::getLocalPlayer();
            // if (!IsBadReadPtr(&isServer, sizeof(bool)) && !isServer) {
             if (isServer) {
                 if (ImGui::Button("Host", ImVec2(125.000f, 30.000f)))
@@ -176,11 +175,11 @@ namespace d3dhook {
                 Globals::tab = 1;
             }
 
- 
+    
 
             if (Globals::tab == 0) {
-                auto PlayerController = LocalPlayerWrapper::getController();
-                auto character = (Character*)LocalPlayerWrapper::getPawn(PlayerController);
+                auto PlayerController = localPlayer->PlayerController;
+                auto character = PlayerController->Character;
 
                 if (ImGui::SliderFloat("CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 5.f)) {
                     printf("edited customtimedilataion, new value : %f\n", character->CustomTimeDilatation);
@@ -189,8 +188,8 @@ namespace d3dhook {
             else if (Globals::tab == 1) {
                 if (ImGui::Button("Display Location"))
                 {
-                    auto Controller = LocalPlayerWrapper::getController();
-                    auto Pawn = LocalPlayerWrapper::getPawn(Controller);
+                    auto PlayerController = localPlayer->PlayerController;
+                    auto Pawn = PlayerController->Character;
                     auto Location = ue4::K2_GetActorLocation(Pawn);
 
                     printf("Location X : %f\n", Location.X);
@@ -206,12 +205,12 @@ namespace d3dhook {
 
                 if (ImGui::Button("Print LocalPlayer ptr")) {
                //     printf("Is Server : %d\n", ue4::IsServer());
-                    PRINT_PTR(LocalPlayerWrapper::getLocalPlayer(), "LocalPlayer");
+                    PRINT_PTR(localPlayer, "LocalPlayer");
                 }
 
                 
 
-                if (ImGui::Button("Print Uworld full name")) {
+                if (ImGui::Button("Print names")) {
                     auto world = UpgunnedEngine::GetWorld();
                     wprintf(L"UWorld name : %s\n",((UObject*)world)->GetFullName().c_str());
                 }
@@ -237,7 +236,7 @@ namespace d3dhook {
                 }
 
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
-                    auto PlayerController = LocalPlayerWrapper::getController();
+                    auto PlayerController = localPlayer->PlayerController;
                     PRINT_PTR(PlayerController, "PlayerController")
                     PRINT_PTR(PlayerController->PlayerCameraManager, "CameraManager")
                     auto FOV = ue4::GetFovAngle(PlayerController->PlayerCameraManager);

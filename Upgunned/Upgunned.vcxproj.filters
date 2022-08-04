@@ -54,9 +54,6 @@
     <ClInclude Include="guirenderer.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="LocalPlayer.h">
-      <Filter>Header Files\ue4</Filter>
-    </ClInclude>
     <ClInclude Include="ue4structs.h">
       <Filter>Header Files\ue4</Filter>
     </ClInclude>

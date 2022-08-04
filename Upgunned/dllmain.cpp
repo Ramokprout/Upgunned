@@ -3,7 +3,6 @@
 #include "offsets.h"
 #include "util.h"
 #include "guirenderer.h"
-#include "LocalPlayer.h"
 
 DWORD WINAPI Main(HMODULE lpParam) {
     CreateConsole
