@@ -74,11 +74,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>D:\D3D11SDK2010\Include;./imgui;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\D3D11SDK2010\Lib\x64;./imgui;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\D3D11SDK2010\Lib\x64;$(LibraryPath)</LibraryPath>
     <LinkIncremental>false</LinkIncremental>
-    <ExternalIncludePath>./imgui;$(ExternalIncludePath)</ExternalIncludePath>
-    <ReferencePath>./imgui;$(ReferencePath)</ReferencePath>
-    <SourcePath>./imgui;$(SourcePath)</SourcePath>
+    <ExternalIncludePath>..\imgui;$(ExternalIncludePath)</ExternalIncludePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -153,30 +153,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Upgunned\d3dhook.h" />
-    <ClInclude Include="Upgunned\engine.h" />
-    <ClInclude Include="Upgunned\framework.h" />
-    <ClInclude Include="Upgunned\Globals.h" />
-    <ClInclude Include="Upgunned\guirenderer.h" />
-    <ClInclude Include="Upgunned\hooks.h" />
-    <ClInclude Include="Upgunned\LocalPlayer.h" />
-    <ClInclude Include="Upgunned\offsets.h" />
-    <ClInclude Include="Upgunned\pch.h" />
-    <ClInclude Include="Upgunned\upgunstructs.h" />
-    <ClInclude Include="Upgunned\Native.h" />
-    <ClInclude Include="Upgunned\ue4.h" />
-    <ClInclude Include="Upgunned\ue4structs.h" />
-    <ClInclude Include="Upgunned\util.h" />
+    <ClInclude Include="d3dhook.h" />
+    <ClInclude Include="engine.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="guirenderer.h" />
+    <ClInclude Include="hooks.h" />
+    <ClInclude Include="LocalPlayer.h" />
+    <ClInclude Include="offsets.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="upgunstructs.h" />
+    <ClInclude Include="Native.h" />
+    <ClInclude Include="ue4.h" />
+    <ClInclude Include="ue4structs.h" />
+    <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Upgunned\dllmain.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="imgui\imgui_tables.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Upgunned\pch.cpp">
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="..\imgui\imgui.cpp" />
+    <ClCompile Include="..\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -184,16 +184,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="..\packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\Detours.4.0.1\build\native\Detours.targets" Condition="Exists('packages\Detours.4.0.1\build\native\Detours.targets')" />
+    <Import Project="..\packages\Detours.4.0.1\build\native\Detours.targets" Condition="Exists('..\packages\Detours.4.0.1\build\native\Detours.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Detours.4.0.1\build\native\Detours.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Detours.4.0.1\build\native\Detours.targets'))" />
+    <Error Condition="!Exists('..\packages\Detours.4.0.1\build\native\Detours.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Detours.4.0.1\build\native\Detours.targets'))" />
   </Target>
 </Project>

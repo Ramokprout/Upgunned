@@ -24,76 +24,76 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Upgunned\d3dhook.h">
+    <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\engine.h">
+    <ClInclude Include="Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\framework.h">
+    <ClInclude Include="hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\Globals.h">
+    <ClInclude Include="offsets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\guirenderer.h">
+    <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\hooks.h">
+    <ClInclude Include="Native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\LocalPlayer.h">
+    <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\offsets.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="d3dhook.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\pch.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="engine.h">
+      <Filter>Header Files\ue4</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\upgunstructs.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="guirenderer.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\Native.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="LocalPlayer.h">
+      <Filter>Header Files\ue4</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\ue4.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ue4structs.h">
+      <Filter>Header Files\ue4</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\ue4structs.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="upgunstructs.h">
+      <Filter>Header Files\ue4</Filter>
     </ClInclude>
-    <ClInclude Include="Upgunned\util.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ue4.h">
+      <Filter>Header Files\ue4</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="imgui\imgui.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_impl_win32.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_tables.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui\imgui_widgets.cpp">
-      <Filter>Source Files\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="Upgunned\dllmain.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Upgunned\pch.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_impl_win32.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_tables.cpp">
+      <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="..\packages.config" />
   </ItemGroup>
 </Project>
