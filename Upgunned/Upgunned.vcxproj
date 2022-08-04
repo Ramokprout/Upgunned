@@ -22,8 +22,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{feb83af5-8c1b-4e41-b7d2-87125b208ea4}</ProjectGuid>
-    <RootNamespace>Upgunned2</RootNamespace>
+    <RootNamespace>Upgunned</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Upgunned</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -120,7 +121,7 @@
       <PreprocessorDefinitions>_DEBUG;UPGUNNED2_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>Upgunned\pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,30 +153,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="d3dhook.h" />
-    <ClInclude Include="engine.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="guirenderer.h" />
-    <ClInclude Include="hooks.h" />
-    <ClInclude Include="LocalPlayer.h" />
-    <ClInclude Include="offsets.h" />
-    <ClInclude Include="pch.h" />
-    <ClInclude Include="upgunstructs.h" />
-    <ClInclude Include="Native.h" />
-    <ClInclude Include="ue4.h" />
-    <ClInclude Include="ue4structs.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="Upgunned\d3dhook.h" />
+    <ClInclude Include="Upgunned\engine.h" />
+    <ClInclude Include="Upgunned\framework.h" />
+    <ClInclude Include="Upgunned\Globals.h" />
+    <ClInclude Include="Upgunned\guirenderer.h" />
+    <ClInclude Include="Upgunned\hooks.h" />
+    <ClInclude Include="Upgunned\LocalPlayer.h" />
+    <ClInclude Include="Upgunned\offsets.h" />
+    <ClInclude Include="Upgunned\pch.h" />
+    <ClInclude Include="Upgunned\upgunstructs.h" />
+    <ClInclude Include="Upgunned\Native.h" />
+    <ClInclude Include="Upgunned\ue4.h" />
+    <ClInclude Include="Upgunned\ue4structs.h" />
+    <ClInclude Include="Upgunned\util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Upgunned\dllmain.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="Upgunned\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
