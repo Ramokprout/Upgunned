@@ -37,31 +37,6 @@ namespace hooks {
 		}
 	
 #endif
-
-		auto localPlayer = ue4::getLocalPlayer();
-		if (localPlayer->PlayerController) {
-			auto weaponAttributeSet = localPlayer->PlayerController->Character->PlayerState->WeaponAttributeSet;
-		
-			/*if (Globals::noSpread->enabled) {
-				weaponAttributeSet->RifleDispersion.CurrentValue = Globals::noSpread->OriginalValue * Globals::noSpread->Multiplier;
-			}		
-			
-			if (Globals::RifleFireRateMultiplier->enabled) {
-				weaponAttributeSet->RifleFireRate.CurrentValue = Globals::RifleFireRateMultiplier->OriginalValue * Globals::RifleFireRateMultiplier->Multiplier;
-			}		
-			
-			if (Globals::BulletSpeedMultiplier->enabled) {
-				weaponAttributeSet->RifleBulletSpeed.CurrentValue = Globals::BulletSpeedMultiplier->OriginalValue * Globals::BulletSpeedMultiplier->Multiplier;
-			}		
-			
-			if (Globals::RifleCriticalHitChanceMultiplier->enabled) {
-				weaponAttributeSet->RifleCriticalHitChance.CurrentValue = Globals::RifleCriticalHitChanceMultiplier->OriginalValue * Globals::RifleCriticalHitChanceMultiplier->Multiplier;
-			}*/
-
-	
-
-		}
-
 		//localPlayer->PlayerController->Character->PlayerState->WeaponAttributeSet->RifleMagazine.CurrentValue = (float)Globals::RifleMagazine;
 
 		return Native::oProcessEvent(dis, fn, params);

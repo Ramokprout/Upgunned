@@ -32,6 +32,8 @@ DWORD WINAPI Main(HMODULE lpParam) {
     Globals::RifleFireRateMultiplier = new ValueMultiplier();
     Globals::BulletSpeedMultiplier = new ValueMultiplier();
     Globals::RifleCriticalHitChanceMultiplier = new ValueMultiplier();
+    Globals::HealthMultiplier = new ValueMultiplier();
+    Globals::WalkSpeedMultiplier = new ValueMultiplier();
 
     offsetsManager* offsetManager = new offsetsManager();
     offsetManager->Initialize();

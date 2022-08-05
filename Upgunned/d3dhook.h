@@ -114,6 +114,30 @@ namespace d3dhook {
         return hr;
     }
 
+    void resetEveryValues() {
+        Globals::WalkSpeedMultiplier->enabled = false;
+        Globals::WalkSpeedMultiplier->Multiplier = 1;
+        Globals::WalkSpeedMultiplier->OriginalValue = 0.f;
+        Globals::HealthMultiplier->enabled = false;
+        Globals::HealthMultiplier->Multiplier = 1;
+        Globals::HealthMultiplier->OriginalValue = 0.f;
+        Globals::noSpread->enabled = false;
+        Globals::noSpread->enabledCheckbox = false;
+        Globals::noSpread->Multiplier = 1;
+        Globals::noSpread->OriginalValue = 0.f;
+        Globals::RifleFireRateMultiplier->enabled = false;
+        Globals::RifleFireRateMultiplier->Multiplier = 1;
+        Globals::RifleFireRateMultiplier->OriginalValue = 0.f;
+        Globals::BulletSpeedMultiplier->enabled = false;
+        Globals::BulletSpeedMultiplier->Multiplier = 1;
+        Globals::BulletSpeedMultiplier->OriginalValue = 0.f;
+        Globals::RifleMagazine = 20.0f;
+        Globals::RifleCriticalHitChanceMultiplier->enabled = false;
+        Globals::RifleCriticalHitChanceMultiplier->Multiplier = 1;
+        Globals::RifleCriticalHitChanceMultiplier->OriginalValue = 0.f;
+        Globals::GWorldTrigger = UpgunnedEngine::GetWorld();
+    }
+
 
 
     static HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags)
@@ -188,9 +212,9 @@ namespace d3dhook {
             {
                 Globals::tab = 3;
             }
-
+            auto world = UpgunnedEngine::GetWorld();
             if (Globals::tab == 0) {
-                auto world = UpgunnedEngine::GetWorld();
+
                 auto PlayerController = localPlayer->PlayerController;
                 auto character = PlayerController->Character;
                 ImGui::SetNextItemWidth(200.000f);
@@ -219,7 +243,10 @@ namespace d3dhook {
                 if (ImGui::Button("Print Addresses")) {
                     auto LocalPlayer = ue4::getLocalPlayer();
                     PRINT_PTR(LocalPlayer, "LocalPlayer");
-                    PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
+                    if (LocalPlayer->PlayerController) {
+                        PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
+                    }
+    
                 }
             }
             else if(Globals::tab == 2) {
@@ -239,6 +266,10 @@ namespace d3dhook {
                         << termcolor::reset
                         << std::endl;
 #endif
+                }
+
+                if (Globals::GWorldTrigger != world) {
+                    d3dhook::resetEveryValues();
                 }
 
                 if (ImGui::CollapsingHeader("Weapon"))
@@ -321,6 +352,46 @@ namespace d3dhook {
 
                     }
                 }
+
+                if (ImGui::CollapsingHeader("Player")) {
+                    auto LocalPlayer = ue4::getLocalPlayer();
+                    auto BaseCharacterAttributeSet = LocalPlayer->PlayerController->Character->PlayerState->BaseCharacterAttributeSet;
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderFloat("Health Multiplier", &Globals::HealthMultiplier->Multiplier, 0.5f, 15.f)) {
+                        if (!Globals::HealthMultiplier->enabled) {
+                            Globals::HealthMultiplier->OriginalValue = BaseCharacterAttributeSet->MaxHealth.CurrentValue;
+                            Globals::HealthMultiplier->enabled = true;
+                        }
+
+                        BaseCharacterAttributeSet->Health.CurrentValue = BaseCharacterAttributeSet->MaxHealth.CurrentValue * Globals::HealthMultiplier->Multiplier;
+                    }      
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderFloat("WalkSpeed Multiplier", &Globals::WalkSpeedMultiplier->Multiplier, 0.5f, 4.f)) {
+                        if (!Globals::WalkSpeedMultiplier->enabled) {
+                            Globals::WalkSpeedMultiplier->OriginalValue = BaseCharacterAttributeSet->WalkSpeed.CurrentValue;
+                            Globals::WalkSpeedMultiplier->enabled = true;
+                        }
+
+                        BaseCharacterAttributeSet->WalkSpeed.CurrentValue = BaseCharacterAttributeSet->WalkSpeed.CurrentValue * Globals::WalkSpeedMultiplier->Multiplier;
+                    }
+
+                    if (ImGui::Button("Reset Values##PlayerResetValues")) {
+
+                        BaseCharacterAttributeSet->WalkSpeed.CurrentValue = Globals::WalkSpeedMultiplier->OriginalValue;
+                        BaseCharacterAttributeSet->Health.CurrentValue = Globals::HealthMultiplier->OriginalValue;
+                        Globals::WalkSpeedMultiplier->enabled = false;
+                        Globals::WalkSpeedMultiplier->Multiplier = 1;
+                        Globals::WalkSpeedMultiplier->OriginalValue = 0.f;
+                        Globals::HealthMultiplier->enabled = false;
+                        Globals::HealthMultiplier->Multiplier = 1;
+                        Globals::HealthMultiplier->OriginalValue = 0.f;
+                       
+
+
+                    }
+                 
+                }
+
             }
 
 

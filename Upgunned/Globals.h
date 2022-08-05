@@ -6,13 +6,8 @@
 
 #include "pch.h"
 
+class ValueMultiplier;
 
-struct ValueMultiplier {
-	float OriginalValue = 0.00f;
-	float Multiplier = 0.00f;
-	bool enabled = false;
-	bool enabledCheckbox = false;
-};
 
 namespace Globals {
 	inline HWND window = NULL;
@@ -28,9 +23,21 @@ namespace Globals {
 	ValueMultiplier* RifleFireRateMultiplier = nullptr;
 	ValueMultiplier* BulletSpeedMultiplier = nullptr;
 	ValueMultiplier* RifleCriticalHitChanceMultiplier = nullptr;
+	ValueMultiplier* HealthMultiplier = nullptr;
+	ValueMultiplier* WalkSpeedMultiplier = nullptr;
+	void* GWorldTrigger = nullptr;
 	int RifleMagazine = 20;
 	int tab = 0;
 	int FOV = 90;
+};
+
+class ValueMultiplier {
+public:
+	float OriginalValue = 0.00f;
+	float Multiplier = 1.00f;
+	bool enabled = false;
+	bool enabledCheckbox = false;
+	void* GWorldAssociated = Globals::GWorldTrigger;
 };
 
 #endif

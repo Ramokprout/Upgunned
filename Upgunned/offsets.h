@@ -6,6 +6,8 @@
 #include "hooks.h"
 #include "util.h"
 
+#include "Globals.h"
+#include "engine.h"
 
 class offsetsManager
 {
@@ -88,6 +90,8 @@ public :
 #endif
 #endif
 				DETOUR_END
+
+					Globals::GWorldTrigger = UpgunnedEngine::GetWorld();
 	}
 };
 
