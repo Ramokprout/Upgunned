@@ -44,7 +44,19 @@ namespace renderer {
 
         DETOUR_START
         DetourAttachE(present, d3dhook::hkPresent);
+#ifndef DEBUGLOG
+        std::cout << termcolor::bright_green
+            << "Hooked Present successfully"
+            << termcolor::reset
+            << std::endl;
+#endif
         DetourAttachE(resize, d3dhook::hkResize);
+#ifndef DEBUGLOG
+        std::cout << termcolor::bright_green
+            << "Hooked ResizeBuffers successfully"
+            << termcolor::reset
+            << std::endl;
+#endif
         DETOUR_END
 
         AddressToFunction(present, Native::oPresent);

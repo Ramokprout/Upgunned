@@ -22,6 +22,9 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{9bfd088f-b90b-40ad-86b4-b3ddeae3d800}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\libs">
+      <UniqueIdentifier>{1ef70153-6847-4172-8d24-fd6e6a0e1aa9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -64,7 +67,7 @@
       <Filter>Header Files\ue4</Filter>
     </ClInclude>
     <ClInclude Include="termcolor.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\libs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
