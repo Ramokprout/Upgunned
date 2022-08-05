@@ -35,7 +35,9 @@ public :
 	static const int IsServer = 0x2679E00;
 	static const int FOV = 0x2776D20;
 	static const int GetFovAngle = 0x27782C0;
-
+#ifdef AESHOOK
+	static const int DecryptData = 0xE69FE0;
+#endif
 
 	inline void Initialize() {
 				uintptr_t Address = 0;
@@ -54,21 +56,19 @@ public :
 				GETOFFSET(Address, ImageBase, this->GOBJECT, Native::GObjects, "GObject")
 				GETOFFSET(Address, ImageBase, this->GENGINE, Native::GEngine, "GEngine Proxy")
 				GETOFFSET(Address, ImageBase, this->IsServer, Native::IsServer, "IsServer")
-				GETOFFSET(Address, ImageBase, this->GetFovAngle, Native::GetFovAngle, "GetFovAngle")
+#ifdef AESHOOK
+					GETOFFSET(Address, ImageBase, this->DecryptData, Native::DecryptData, "DecryptData")
+#endif
+		//		GETOFFSET(Address, ImageBase, this->GetFovAngle, Native::GetFovAngle, "GetFovAngle")
 				//GETOFFSET(Address, ImageBase, this->FOV, Native::FOV, "GetFovAngle")
 
 				DETOUR_START
 				DetourAttachE(Native::oProcessEvent, hooks::hkProcessEvent)
 				DetourAttachE(Native::oPostRender, hooks::hkPostRender)
+#ifdef AESHOOK
+				DetourAttachE(Native::DecryptData, hooks::hkDecryptData)
+#endif
 				DETOUR_END
-
-				//	auto WorldProxy = (UWorldProxy*)Native::UWorld;
-				//	Native::UWorld = (PVOID*)WorldProxy->World;
-
-				//	auto EngineProxy = (GEngineProxy*)Native::GEngine;
-				//	Native::GEngine = (PVOID*)EngineProxy->GEngine;
-					
-				//	PRINT_PTR(Native::UWorld, "UWorld");
 					PRINT_PTR(Native::GEngine, "GEngine");
 	}
 };

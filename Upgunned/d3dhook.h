@@ -8,6 +8,7 @@
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
+
 #define INITSTYLE \
 auto& Style = ImGui::GetStyle();\
 Style.WindowPadding = ImVec2(9.000f, 15.000f);\
@@ -150,7 +151,7 @@ namespace d3dhook {
             ImGui::NewFrame();
 
             ImGui::SetWindowSize(ImVec2(700.000f, 450.000f), ImGuiCond_Once);
-            ImGui::Begin("Upgunned", &Globals::showMenu, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::Begin("Upgunned", &Globals::showMenu);
 
             bool isServer = ue4::IsServer();
             auto localPlayer = ue4::getLocalPlayer();
@@ -173,9 +174,14 @@ namespace d3dhook {
             if (ImGui::Button("Debug", ImVec2(125.000f, 30.000f)))
             {
                 Globals::tab = 1;
-            }
+            }         
 
-    
+            ImGui::SameLine();
+
+            if (ImGui::Button("Visuals", ImVec2(125.000f, 30.000f)))
+            {
+                Globals::tab = 2;
+            }
 
             if (Globals::tab == 0) {
                 auto PlayerController = localPlayer->PlayerController;
@@ -207,42 +213,6 @@ namespace d3dhook {
                //     printf("Is Server : %d\n", ue4::IsServer());
                     PRINT_PTR(localPlayer, "LocalPlayer");
                 }
-
-
-                
-
-                if (ImGui::Button("Print names")) {
-                    auto world = UpgunnedEngine::GetWorld();
-                    
-                    wprintf(L"UWorld name : %s\n",((UObject*)world)->GetFullName().c_str());
-                    wprintf(L"localPlayer name : %s\n",((UObject*)localPlayer)->GetFullName().c_str());
-                    wprintf(L"Controller name : %s\n",((UObject*)localPlayer->PlayerController)->GetFullName().c_str());
-                    wprintf(L"Pawn name : %s\n",((UObject*)localPlayer->PlayerController->Character)->GetFullName().c_str());
-                    wprintf(L"PawnState name : %s\n",((UObject*)localPlayer->PlayerController->Character->PlayerState)->GetFullName().c_str());
-                    //wprintf(L"Playername : %s\n",ue4::GetPlayerName(localPlayer->PlayerController->Character->PlayerState).c_str());
-                }
-
-                if (ImGui::Button("Print Actors Number")) {
-                    
-    /*                auto PersistentLevel = (void*)ReadPointer(Native::UWorld, 0x30);
-                    PRINT_PTR(PersistentLevel, "PersistentLevel");
-                    auto ActorCluster = (void*)ReadPointer(PersistentLevel, 0xD8);
-                    PRINT_PTR(ActorCluster, "ActorCluster");
-                    
-                    //int a = (int)ReadPointerRaw((PVOID*)PersistentLevel + 0xA0);
-                    PVOID* AActors = (PVOID*)ReadPointerRaw((PVOID*)ActorCluster + 0x28);
-                    PRINT_PTR(AActors, "AActors");*/
-              //      int ActorCount = (int)ReadPointerRaw((PVOID*)AActors + sizeof(int));
-
-   /*                 for (int i = 0; i < a; i++) {
-                        auto actor = (PVOID*)ReadPointerRaw((PVOID*)AActors + i * 0x8);
-
-                    }*/
-
-            //        printf("Num : %d\n", ActorCount);
-                }
-
-
             }
             else if(Globals::tab == 2) {
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {

@@ -37,12 +37,14 @@ typedef struct {
 	float M[4][4];
 } FMatrix;
 
-typedef struct {
-	float A;
-	float R;
-	float G;
-	float B;
-} FLinearColor;
+class FLinearColor
+{
+public:
+	float R; //0x0000
+	float G; //0x0004
+	float B; //0x0008
+	float A; //0x000C
+}; //Size: 0x0010
 
 namespace Native {
 
@@ -55,10 +57,11 @@ namespace Native {
 	//inline T* (__fastcall* GetGameInstance)(void*);
 	inline void(__fastcall* K2_DrawLine)(void*, FVector2D, FVector2D, float, FLinearColor);
 	inline void(__fastcall* K2_DrawBox)(void*, FVector2D, FVector2D, float, FLinearColor);
-	inline void*(__fastcall* K2_GetPawn)(void*);
+//	inline void*(__fastcall* K2_GetPawn)(void*);
 	inline void* (__fastcall* StaticConstructObject_internal)(void*, void*, void*, int, int, void*, bool, void*, bool);
 	inline bool(__fastcall* IsServer)(void*);
-	inline float(__fastcall* GetFovAngle)(void*);
+	inline void(__fastcall* DecryptData)(void*, void*, void*);
+	//inline float(__fastcall* GetFovAngle)(void*);
 	//inline void(__fastcall* FOV)(void*, float);
 	inline Present oPresent;
 	inline HRESULT(*oResize)(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) = nullptr;
