@@ -33,11 +33,21 @@ static void Error(std::string error, bool bExit = false)
 
 #define AddressToFunction(a, f) f = reinterpret_cast<decltype(f)>(a);
 
+#ifdef DEBUGLOG
 #define GETOFFSET(buffer, imagebase, a, f, name) \
 	buffer = imagebase + a; \
 	CheckNullFatal(buffer, name) \
 	AddressToFunction(buffer, f) \
 	PRINT_PTR(buffer, name)
+#else
+#define GETOFFSET(buffer, imagebase, a, f, name) \
+	buffer = imagebase + a; \
+	CheckNullFatal(buffer, name) \
+	AddressToFunction(buffer, f) \
+		std::cout << termcolor::bright_green << "Found " << name << " pointer" << termcolor::reset << std::endl;
+#endif
+
+
 
 #define ReadPointer(base, offset) (*(PVOID *)(((PBYTE)base + offset)))
 

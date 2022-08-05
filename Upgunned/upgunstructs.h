@@ -27,12 +27,27 @@ struct UpGunCosmeticSettings {
 	UpGunOSSItemId KnifeItemId;
 };
 
+class WorldSettings
+{
+public:
+	char pad_0000[744]; //0x0000
+	float TimeDilatation; //0x02E8
+	char pad_02EC[28]; //0x02EC
+}; //Size: 0x0308
 
+class ULevel
+{
+public:
+	char pad_0000[600]; //0x0000
+	class WorldSettings* WorldSettings; //0x0258
+	char pad_0260[424]; //0x0260
+}; //Size: 0x0408
 
 class UWorld
 {
 public:
-	char pad_0000[56]; //0x0000
+	char pad_0000[48]; //0x0000
+	class ULevel* PersistentLevel; //0x0030
 	void* NetDriver; //0x0038
 	char pad_0040[224]; //0x0040
 	class GameState* GameState; //0x0120
@@ -40,7 +55,6 @@ public:
 	class OwningGameInstance* OwningGameInstance; //0x0180
 	char pad_0188[1720]; //0x0188
 }; //Size: 0x0840
-
 class OwningGameInstance
 {
 public:

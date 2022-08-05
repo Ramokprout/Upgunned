@@ -155,6 +155,7 @@ namespace d3dhook {
 
             bool isServer = ue4::IsServer();
             auto localPlayer = ue4::getLocalPlayer();
+
            // if (!IsBadReadPtr(&isServer, sizeof(bool)) && !isServer) {
             if (isServer) {
                 if (ImGui::Button("Host", ImVec2(125.000f, 30.000f)))
@@ -181,44 +182,58 @@ namespace d3dhook {
             if (ImGui::Button("Visuals", ImVec2(125.000f, 30.000f)))
             {
                 Globals::tab = 2;
+            }   
+            ImGui::SameLine();
+            if (ImGui::Button("Exploits", ImVec2(125.000f, 30.000f)))
+            {
+                Globals::tab = 3;
             }
 
             if (Globals::tab == 0) {
+                auto world = UpgunnedEngine::GetWorld();
                 auto PlayerController = localPlayer->PlayerController;
                 auto character = PlayerController->Character;
-
-                if (ImGui::SliderFloat("CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 5.f)) {
-                    printf("edited customtimedilataion, new value : %f\n", character->CustomTimeDilatation);
+                ImGui::SetNextItemWidth(200.000f);
+                ImVec2 size;
+                size = ImGui::CalcTextSize("Pawn CustomTimeDilatation");
+                ImGui::SliderFloat("Pawn CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 5.f);
+                ImGui::SameLine();
+                ImGui::SetCursorPos({ size.x + 225, ImGui::GetCursorPosY()});
+                if (ImGui::Button("Reset##first")) {
+                    character->CustomTimeDilatation = 1;
                 }
+                size = ImGui::CalcTextSize("World CustomTimeDilatation");
+                ImGui::SetNextItemWidth(200.000f);
+                ImGui::SliderFloat("World CustomTimeDilatation", &world->PersistentLevel->WorldSettings->TimeDilatation, 0.f, 5.f);
+                ImGui::SameLine();
+                ImGui::SetCursorPos({ size.x + 223, ImGui::GetCursorPosY() });
+                if (ImGui::Button("Reset##second")) {
+                    world->PersistentLevel->WorldSettings->TimeDilatation = 1;
+                }
+
+                
+
             }
             else if (Globals::tab == 1) {
-                if (ImGui::Button("Display Location"))
-                {
-                    auto PlayerController = localPlayer->PlayerController;
-                    auto Pawn = PlayerController->Character;
-                    auto Location = ue4::K2_GetActorLocation(Pawn);
-
-                    printf("Location X : %f\n", Location.X);
-                    printf("Location Y : %f\n", Location.Y);
-                    printf("Location Z : %f\n", Location.Z);
-                }
-
-                if (ImGui::Button("Build Console")) {
-                    ue4::BuildConsole();
-                    ue4::BuildCheatManager();
-                    printf("Console initialized successfully!\n");
-                }
-
-                if (ImGui::Button("Print LocalPlayer ptr")) {
-               //     printf("Is Server : %d\n", ue4::IsServer());
-                    PRINT_PTR(localPlayer, "LocalPlayer");
-                }
+                ImGui::Text("Empty lol");
             }
             else if(Globals::tab == 2) {
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
                     auto LocalPlayer = ue4::getLocalPlayer();
                     auto cam = LocalPlayer->PlayerController->Character->Camera;
                     cam->FieldOfView = (float)Globals::FOV;
+                }
+            }
+            else if (Globals::tab == 3) {
+                if (ImGui::Button("Build Console")) {
+                    ue4::BuildConsole();
+                    ue4::BuildCheatManager();
+#ifndef DEBUGLOG
+                    std::cout << termcolor::bright_green
+                        << "Built UConsole and CheatManager successfully"
+                        << termcolor::reset
+                        << std::endl;
+#endif
                 }
             }
 

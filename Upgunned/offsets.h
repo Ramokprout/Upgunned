@@ -45,31 +45,49 @@ public :
 
 				GETOFFSET(Address, ImageBase, this->PROCESSEVENT, Native::oProcessEvent, "ProcessEvent");
 				GETOFFSET(Address, ImageBase, this->PostRender, Native::oPostRender, "PostRender")
-				GETOFFSET(Address, ImageBase, this->STATICFINDOBJECT, Native::StaticFindObject, "StaticFindObject")
-				GETOFFSET(Address, ImageBase, this->StaticConstructObject_internal, Native::StaticConstructObject_internal, "StaticConstructObject_internal")
-				GETOFFSET(Address, ImageBase, this->SpawnObject, Native::SpawnObject, "SpawnObject")
-				GETOFFSET(Address, ImageBase, this->FNAMETOSTRING, Native::FNameToString, "FNameToString")
-				GETOFFSET(Address, ImageBase, this->K2DrawLine, Native::K2_DrawLine, "K2_DrawLine")
-				GETOFFSET(Address, ImageBase, this->K2DrawBox, Native::K2_DrawBox, "K2_DrawBox")
-	//			GETOFFSET(Address, ImageBase, this->K2_GetPawn, Native::K2_GetPawn, "K2_GetPawn")
-		//		GETOFFSET(Address, ImageBase, this->GWORLD, Native::UWorld, "UWorld Proxy")
-				GETOFFSET(Address, ImageBase, this->GOBJECT, Native::GObjects, "GObject")
-				GETOFFSET(Address, ImageBase, this->GENGINE, Native::GEngine, "GEngine Proxy")
-				GETOFFSET(Address, ImageBase, this->IsServer, Native::IsServer, "IsServer")
+					GETOFFSET(Address, ImageBase, this->STATICFINDOBJECT, Native::StaticFindObject, "StaticFindObject")
+					GETOFFSET(Address, ImageBase, this->StaticConstructObject_internal, Native::StaticConstructObject_internal, "StaticConstructObject_internal")
+					GETOFFSET(Address, ImageBase, this->SpawnObject, Native::SpawnObject, "SpawnObject")
+					GETOFFSET(Address, ImageBase, this->FNAMETOSTRING, Native::FNameToString, "FNameToString")
+					GETOFFSET(Address, ImageBase, this->K2DrawLine, Native::K2_DrawLine, "K2_DrawLine")
+					GETOFFSET(Address, ImageBase, this->K2DrawBox, Native::K2_DrawBox, "K2_DrawBox")
+					//			GETOFFSET(Address, ImageBase, this->K2_GetPawn, Native::K2_GetPawn, "K2_GetPawn")
+						//		GETOFFSET(Address, ImageBase, this->GWORLD, Native::UWorld, "UWorld Proxy")
+					GETOFFSET(Address, ImageBase, this->GOBJECT, Native::GObjects, "GObject")
+					GETOFFSET(Address, ImageBase, this->GENGINE, Native::GEngine, "GEngine Proxy")
+					GETOFFSET(Address, ImageBase, this->IsServer, Native::IsServer, "IsServer")
 #ifdef AESHOOK
 					GETOFFSET(Address, ImageBase, this->DecryptData, Native::DecryptData, "DecryptData")
 #endif
-		//		GETOFFSET(Address, ImageBase, this->GetFovAngle, Native::GetFovAngle, "GetFovAngle")
-				//GETOFFSET(Address, ImageBase, this->FOV, Native::FOV, "GetFovAngle")
+					//		GETOFFSET(Address, ImageBase, this->GetFovAngle, Native::GetFovAngle, "GetFovAngle")
+							//GETOFFSET(Address, ImageBase, this->FOV, Native::FOV, "GetFovAngle")
 
-				DETOUR_START
-				DetourAttachE(Native::oProcessEvent, hooks::hkProcessEvent)
+					DETOUR_START
+					DetourAttachE(Native::oProcessEvent, hooks::hkProcessEvent)
+#ifndef DEBUGLOG
+					std::cout << termcolor::bright_green
+					<< "Hooked ProcessEvent successfully"
+					<< termcolor::reset
+					<< std::endl;
+#endif
 				DetourAttachE(Native::oPostRender, hooks::hkPostRender)
+#ifndef DEBUGLOG
+					std::cout << termcolor::bright_green
+					<< "Hooked PostRender successfully"
+					<< termcolor::reset
+					<< std::endl;
+#endif
 #ifdef AESHOOK
+
 				DetourAttachE(Native::DecryptData, hooks::hkDecryptData)
+#ifndef DEBUGLOG
+					std::cout << termcolor::bright_green
+					<< "Hooked DecryptData successfully"
+					<< termcolor::reset
+					<< std::endl;
+#endif
 #endif
 				DETOUR_END
-					PRINT_PTR(Native::GEngine, "GEngine");
 	}
 };
 

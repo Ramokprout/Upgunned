@@ -21,6 +21,7 @@ private :
 		return Native::StaticFindObject(nullptr, nullptr, ObjectName, false);
 	}
 public:
+	
 
 	static LocalPlayer* getLocalPlayer() {
 		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);
@@ -48,8 +49,10 @@ public:
 	static void BuildConsole() {
 		auto Engine = UpgunnedEngine::GetEngine();
 
+#ifdef DEBUGLOG
 		PRINT_PTR(Engine->ConsoleClass, "ConsoleClass");
 		PRINT_PTR(Engine->GameViewport, "GameViewport");
+#endif
 
 		SpawnObject_Params params
 		{
@@ -75,7 +78,9 @@ public:
 		auto ret = ue4::EasySpawnObject(params);
 
 		WritePointerRaw((LPVOID*)&LocalPlayer->PlayerController->CheatManager, ret);
+#ifdef DEBUGLOG
 		printf("CheatManager ptr : %p\n", LocalPlayer->PlayerController->CheatManager);
+#endif
 	}
 
 	template <typename T>

@@ -6,6 +6,27 @@
 
 DWORD WINAPI Main(HMODULE lpParam) {
     CreateConsole
+#ifndef DEBUGLOG
+        std::cout 
+        << termcolor::bright_green
+        << "Welcome to UpGunned !"
+        << std::endl
+        << "This is an open-source cheat made by Ramok"
+        << std::endl 
+        << termcolor::bright_grey
+        << "Github Repository : "
+        << termcolor::bright_green
+        << "https://github.com/Ramokprout/Upgunned"
+        << termcolor::reset
+        << std::endl
+        << termcolor::bright_red
+        << "If you bought this you got scammed !"
+        << std::endl
+        << termcolor::bright_blue
+        << "Thanks for using my programs"
+        << std::endl
+        << termcolor::reset;
+#endif
     offsetsManager* offsetManager = new offsetsManager();
     offsetManager->Initialize();
     renderer::Initialize();

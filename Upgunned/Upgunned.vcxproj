@@ -161,6 +161,7 @@
     <ClInclude Include="hooks.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="termcolor.hpp" />
     <ClInclude Include="upgunstructs.h" />
     <ClInclude Include="Native.h" />
     <ClInclude Include="ue4.h" />

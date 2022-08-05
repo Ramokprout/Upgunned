@@ -63,6 +63,9 @@
     <ClInclude Include="ue4.h">
       <Filter>Header Files\ue4</Filter>
     </ClInclude>
+    <ClInclude Include="termcolor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
