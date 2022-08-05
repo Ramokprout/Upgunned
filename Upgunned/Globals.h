@@ -7,7 +7,12 @@
 #include "pch.h"
 
 
-
+struct ValueMultiplier {
+	float OriginalValue = 0.00f;
+	float Multiplier = 0.00f;
+	bool enabled = false;
+	bool enabledCheckbox = false;
+};
 
 namespace Globals {
 	inline HWND window = NULL;
@@ -18,7 +23,12 @@ namespace Globals {
 	inline IDXGISwapChain* swapChain = nullptr;
 	bool showMenu = true;
 	bool init = false;
-	bool bCanBeDamaged = false;
+//	bool bCanBeDamaged = false;
+	ValueMultiplier* noSpread = nullptr;
+	ValueMultiplier* RifleFireRateMultiplier = nullptr;
+	ValueMultiplier* BulletSpeedMultiplier = nullptr;
+	ValueMultiplier* RifleCriticalHitChanceMultiplier = nullptr;
+	int RifleMagazine = 20;
 	int tab = 0;
 	int FOV = 90;
 };

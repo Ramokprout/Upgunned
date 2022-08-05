@@ -196,7 +196,7 @@ namespace d3dhook {
                 ImGui::SetNextItemWidth(200.000f);
                 ImVec2 size;
                 size = ImGui::CalcTextSize("Pawn CustomTimeDilatation");
-                ImGui::SliderFloat("Pawn CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 5.f);
+                ImGui::SliderFloat("Pawn CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 15.f);
                 ImGui::SameLine();
                 ImGui::SetCursorPos({ size.x + 225, ImGui::GetCursorPosY()});
                 if (ImGui::Button("Reset##first")) {
@@ -204,7 +204,7 @@ namespace d3dhook {
                 }
                 size = ImGui::CalcTextSize("World CustomTimeDilatation");
                 ImGui::SetNextItemWidth(200.000f);
-                ImGui::SliderFloat("World CustomTimeDilatation", &world->PersistentLevel->WorldSettings->TimeDilatation, 0.f, 5.f);
+                ImGui::SliderFloat("World CustomTimeDilatation", &world->PersistentLevel->WorldSettings->TimeDilatation, 0.f, 15.f);
                 ImGui::SameLine();
                 ImGui::SetCursorPos({ size.x + 223, ImGui::GetCursorPosY() });
                 if (ImGui::Button("Reset##second")) {
@@ -215,7 +215,12 @@ namespace d3dhook {
 
             }
             else if (Globals::tab == 1) {
-                ImGui::Text("Empty lol");
+            //    ImGui::Text("Empty lol");
+                if (ImGui::Button("Print Addresses")) {
+                    auto LocalPlayer = ue4::getLocalPlayer();
+                    PRINT_PTR(LocalPlayer, "LocalPlayer");
+                    PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
+                }
             }
             else if(Globals::tab == 2) {
                 if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
@@ -234,6 +239,87 @@ namespace d3dhook {
                         << termcolor::reset
                         << std::endl;
 #endif
+                }
+
+                if (ImGui::CollapsingHeader("Weapon"))
+                {
+                    auto weaponAttributeSet = localPlayer->PlayerController->Character->PlayerState->WeaponAttributeSet;
+                    if (ImGui::Checkbox("No Spread", &Globals::noSpread->enabledCheckbox)) {
+                        if (Globals::noSpread->enabledCheckbox) {
+                            if (!Globals::noSpread->enabled) {
+                                Globals::noSpread->OriginalValue = weaponAttributeSet->RifleDispersion.CurrentValue;
+                                Globals::noSpread->Multiplier = 0.001f;
+                                Globals::noSpread->enabled = true;
+                            }
+                            weaponAttributeSet->RifleDispersion.CurrentValue = weaponAttributeSet->RifleDispersion.CurrentValue * Globals::noSpread->Multiplier;
+                        }
+                        else {
+                            Globals::noSpread->enabled = false;
+                            Globals::noSpread->OriginalValue = 0;
+                            Globals::noSpread->Multiplier = 1;
+                        }
+
+                    }
+
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderFloat("Rifle Fire Rate Multiplier", &Globals::RifleFireRateMultiplier->Multiplier, 0.01f, 50.f)) {
+                        if (!Globals::RifleFireRateMultiplier->enabled) {
+                            Globals::RifleFireRateMultiplier->OriginalValue = weaponAttributeSet->RifleFireRate.CurrentValue;
+                            Globals::RifleFireRateMultiplier->enabled = true;
+                        }
+
+                        weaponAttributeSet->RifleFireRate.CurrentValue = Globals::RifleFireRateMultiplier->OriginalValue * Globals::RifleFireRateMultiplier->Multiplier;
+                    }
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderFloat("Bullet Speed Multiplier", &Globals::BulletSpeedMultiplier->Multiplier, 0.01f, 25.f)) {
+                        if (!Globals::BulletSpeedMultiplier->enabled) {
+                            Globals::BulletSpeedMultiplier->OriginalValue = weaponAttributeSet->RifleBulletSpeed.CurrentValue;
+                            Globals::BulletSpeedMultiplier->enabled = true;
+                        }
+
+                        weaponAttributeSet->RifleBulletSpeed.CurrentValue = Globals::BulletSpeedMultiplier->OriginalValue * Globals::BulletSpeedMultiplier->Multiplier;
+                    }
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderInt("Rifle Magazine", &Globals::RifleMagazine, 5, 100))
+                    {
+                        weaponAttributeSet->RifleMagazine.CurrentValue = (float)Globals::RifleMagazine;
+                    }
+                    ImGui::SetNextItemWidth(150.000f);
+                    if (ImGui::SliderFloat("Bullet Critical Hit Chance Multiplier", &Globals::RifleCriticalHitChanceMultiplier->Multiplier, 0.01f, 150.f)) {
+                        if (!Globals::RifleCriticalHitChanceMultiplier->enabled) {
+                            Globals::RifleCriticalHitChanceMultiplier->OriginalValue = weaponAttributeSet->RifleCriticalHitChance.CurrentValue;
+                            Globals::RifleCriticalHitChanceMultiplier->enabled = true;
+                        }
+                        weaponAttributeSet->RifleCriticalHitChance.CurrentValue = Globals::RifleCriticalHitChanceMultiplier->OriginalValue * Globals::RifleCriticalHitChanceMultiplier->Multiplier;
+                    }
+                    ImGui::SetNextItemWidth(150.000f);
+                    ImGui::SliderFloat("Bullet Damage Multiplier", &weaponAttributeSet->DamageBaseMultiplier.CurrentValue, 0.01f, 150.f);
+                    if (ImGui::Button("Reset Values##WeaponResetValues")) {
+
+                        weaponAttributeSet->DamageBaseMultiplier.CurrentValue = weaponAttributeSet->DamageBaseMultiplier.BaseValue;
+                        weaponAttributeSet->RifleMagazine.CurrentValue = weaponAttributeSet->RifleMagazine.BaseValue;
+                        weaponAttributeSet->RifleCriticalHitChance.CurrentValue = Globals::RifleCriticalHitChanceMultiplier->OriginalValue;
+                        weaponAttributeSet->RifleBulletSpeed.CurrentValue = Globals::BulletSpeedMultiplier->OriginalValue;
+                        weaponAttributeSet->RifleFireRate.CurrentValue = Globals::RifleFireRateMultiplier->OriginalValue;
+                        weaponAttributeSet->RifleDispersion.CurrentValue = Globals::noSpread->OriginalValue;
+
+                        Globals::noSpread->enabled = false;
+                        Globals::noSpread->enabledCheckbox = false;
+                        Globals::noSpread->Multiplier = 1;
+                        Globals::noSpread->OriginalValue = 0.f;
+                        Globals::RifleFireRateMultiplier->enabled = false;
+                        Globals::RifleFireRateMultiplier->Multiplier = 1;
+                        Globals::RifleFireRateMultiplier->OriginalValue = 0.f;
+                        Globals::BulletSpeedMultiplier->enabled = false;
+                        Globals::BulletSpeedMultiplier->Multiplier = 1;
+                        Globals::BulletSpeedMultiplier->OriginalValue = 0.f;
+                        Globals::RifleMagazine = 20.0f;
+                        Globals::RifleCriticalHitChanceMultiplier->enabled = false;
+                        Globals::RifleCriticalHitChanceMultiplier->Multiplier = 1;
+                        Globals::RifleCriticalHitChanceMultiplier->OriginalValue = 0.f;
+
+
+                    }
                 }
             }
 

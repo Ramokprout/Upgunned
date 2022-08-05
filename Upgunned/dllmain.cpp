@@ -27,6 +27,12 @@ DWORD WINAPI Main(HMODULE lpParam) {
         << std::endl
         << termcolor::reset;
 #endif
+
+    Globals::noSpread = new ValueMultiplier();
+    Globals::RifleFireRateMultiplier = new ValueMultiplier();
+    Globals::BulletSpeedMultiplier = new ValueMultiplier();
+    Globals::RifleCriticalHitChanceMultiplier = new ValueMultiplier();
+
     offsetsManager* offsetManager = new offsetsManager();
     offsetManager->Initialize();
     renderer::Initialize();
