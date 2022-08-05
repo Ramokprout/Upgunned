@@ -8,12 +8,35 @@
 class UObject;
 
 
+// Created with ReClass.NET 1.2 by KN4CK3R
+
+struct UpGunOSSItemId
+{
+	FString Id;
+};
+
+struct UpGunCosmeticSettings {
+
+	UpGunOSSItemId ScreenItemId;
+
+	FLinearColor FaceTint;
+
+	UpGunOSSItemId ArmorItemId;
+	UpGunOSSItemId HatItemId;
+	UpGunOSSItemId RifleItemId;
+	UpGunOSSItemId KnifeItemId;
+};
+
+
+
 class UWorld
 {
 public:
 	char pad_0000[56]; //0x0000
 	void* NetDriver; //0x0038
-	char pad_0040[320]; //0x0040
+	char pad_0040[224]; //0x0040
+	class GameState* GameState; //0x0120
+	char pad_0128[88]; //0x0128
 	class OwningGameInstance* OwningGameInstance; //0x0180
 	char pad_0188[1720]; //0x0188
 }; //Size: 0x0840
@@ -43,9 +66,9 @@ public:
 	class Character* Character; //0x02A0
 	char pad_02A8[16]; //0x02A8
 	class PlayerCameraManager* PlayerCameraManager; //0x02B8
-	char pad_02C0[112]; //0x02C0
-	void* CheatManager; //0x0330
-	char pad_0338[240]; //0x0338
+	char pad_02C0[120]; //0x02C0
+	void* CheatManager; //0x0338
+	char pad_0340[232]; //0x0340
 }; //Size: 0x0428
 
 class Character
@@ -59,7 +82,9 @@ public:
 	class CharacterMovement* CharacterMovement; //0x0288
 	char pad_0290[576]; //0x0290
 	class CameraComponent* Camera; //0x04D0
-	char pad_04D8[959]; //0x04D8
+	char pad_04D8[24]; //0x04D8
+	class CosmeticManager* CosmeticManager; //0x04F0
+	char pad_04F8[927]; //0x04F8
 }; //Size: 0x0897
 
 class PlayerCameraManager
@@ -123,16 +148,17 @@ public:
 	char pad_0229[23]; //0x0229
 	void* SavedNetworkAddress; //0x0240
 	char pad_0248[232]; //0x0248
-	class AbilitySystem* N00000D42; //0x0330
-	class SkillManager* N00000D43; //0x0338
-	class StatManager N00000D44; //0x0340
-	char pad_0348[8]; //0x0348
+	class AbilitySystem* AbilitySystem; //0x0330
+	class SkillManager* SkillManager; //0x0338
+	class StatManager StatManager; //0x0340
+	class BaseCharacterAttributeSet* BaseCharacterAttributeSet; //0x0348
 	class UpGunWeaponAttributeSet* WeaponAttributeSet; //0x0350
-	char pad_0358[136]; //0x0358
-	int32_t Kills; //0x03E0
-	int32_t Deaths; //0x03E4
-	uint32_t Assists; //0x03E8
-	char pad_03EC[16823]; //0x03EC
+	char pad_0358[40]; //0x0358
+	UpGunCosmeticSettings CosmeticSettings; //0x0380
+	char pad_0388[95]; //0x0388
+	int32_t Kills; //0x03E7
+	int32_t Deaths; //0x03EB
+	uint32_t Assists; //0x03EF
 }; //Size: 0x45A3
 
 class AbilitySystem
@@ -181,16 +207,74 @@ public:
 	char pad_01FC[268]; //0x01FC
 }; //Size: 0x0308
 
-class N00001697
-{
-public:
-	char pad_0000[8]; //0x0000
-}; //Size: 0x0008
 
-class N000016C5
+
+class CosmeticManager
 {
 public:
-	char pad_0000[8]; //0x0000
-}; //Size: 0x0008
+	char pad_0000[176]; //0x0000
+	void* HatRootComponent; //0x00B0
+	void* HatActor; //0x00B8
+	void* ArmorMat; //0x00C0
+	void* ScreenMat; //0x00C8
+	void* RifleMat; //0x00D0
+	void* Mesh; //0x00D8
+	void* HandsMesh; //0x00E0
+	void* ScreenMesh; //0x00E8
+	void* RifleMesh; //0x00F0
+	void* DefaultRifleMesh; //0x00F8
+	void* KnifeMat; //0x0100
+	void* KnifeMesh; //0x0108
+	void* DefaultKnifeMesh; //0x0110
+	int32_t ArmorMatIndex; //0x0118
+	int32_t ScreenMatIndex; //0x011C
+	class FLinearColor ArmorColor; //0x0120
+	bool bShouldUseArmorColor; //0x0130
+	char pad_0131[31]; //0x0131
+}; //Size: 0x0150
+
+
+/*class UpGunCosmeticSettings
+{
+public:
+	void* ScreenItemId; //0x0000
+	char pad_0008[8]; //0x0008
+	void* FaceTint; //0x0010
+	char pad_0018[8]; //0x0018
+	void* ArmorItemId; //0x0020
+	char pad_0028[8]; //0x0028
+	void* HatItemId; //0x0030
+	char pad_0038[8]; //0x0038
+	void* RifleItemId; //0x0040
+	char pad_0048[8]; //0x0048
+	void* KnifeItemId; //0x0050
+	char pad_0058[944]; //0x0058
+}; //Size: 0x0408*/
+
+
+class GameState
+{
+public:
+	char pad_0000[568]; //0x0000
+	TArray<PlayerState>* PlayerArray; //0x0238
+	char pad_0240[8]; //0x0240
+}; //Size: 0x0248
+
+class BaseCharacterAttributeSet
+{
+public:
+	char pad_0000[72]; //0x0000
+	class GameplayAttributeData Health; //0x0048
+	class GameplayAttributeData OverHealth; //0x0058
+	class GameplayAttributeData MaxHealth; //0x0068
+	class GameplayAttributeData WalkSpeed; //0x0078
+	class GameplayAttributeData CrounchSpeed; //0x0088
+	class GameplayAttributeData JumpVelocity; //0x0098
+	class GameplayAttributeData HeadArmor; //0x00A8
+	class GameplayAttributeData Armor; //0x00B8
+	class GameplayAttributeData FireResistance; //0x00C8
+	char pad_00D8[128]; //0x00D8
+}; //Size: 0x0158
+
 
 #endif

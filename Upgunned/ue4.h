@@ -5,8 +5,6 @@
 #include "Native.h"
 #include "ue4structs.h"
 #include "util.h"
-#include "offsets.h"
-#include "offsets.h"
 #include "engine.h"
 
 struct SpawnObject_Params
@@ -28,10 +26,6 @@ public:
 		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);
 
 		return (LocalPlayer*)pLocalPlayer;
-	}
-
-	static float GetFovAngle(void* CameraManager) {
-		return Native::GetFovAngle(CameraManager);
 	}
 
 	static bool IsServer() {
@@ -81,6 +75,7 @@ public:
 		auto ret = ue4::EasySpawnObject(params);
 
 		WritePointerRaw((LPVOID*)&LocalPlayer->PlayerController->CheatManager, ret);
+		printf("CheatManager ptr : %p\n", LocalPlayer->PlayerController->CheatManager);
 	}
 
 	template <typename T>
