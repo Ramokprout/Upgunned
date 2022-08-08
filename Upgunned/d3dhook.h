@@ -196,7 +196,7 @@ namespace d3dhook {
 
         if (Globals::showWatermark) {
            // pDrawList->AddText(, , );
-            pDrawList->AddText(Globals::font, 18, { Globals::width / 2.6f, 30 }, ImColor{ 255, 0, 0 }, "github.com/Ramokprout/Upgunned - build 03/04/2022");
+            pDrawList->AddText(Globals::font, 18, { Globals::width / 2.55f, 30 }, ImColor{ 255, 0, 0 }, "github.com/Ramokprout/Upgunned");
         }
 
         auto localPlayer = ue4::getLocalPlayer();
