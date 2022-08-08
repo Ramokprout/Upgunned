@@ -28,7 +28,38 @@ namespace Globals {
 	void* GWorldTrigger = nullptr;
 	int RifleMagazine = 20;
 	int tab = 0;
-	int FOV = 90;
+	int FOV = 110;
+	float width = 0;
+	float height = 0;
+	ImFont* font = nullptr;
+
+	//AIMBOT
+	float AimbotFOV = 180;
+	bool renderFOVCircle = false;
+	float FOVCircleColor[3] = { 255, 0, 0 };
+	//ESP
+	bool boxesESP = false;
+	bool boxesESPVischeck = false;
+	float ESPMaxDistance = 600;
+	float ESPColor[3] = { 255, 0, 0 };
+	float ESPVisibleColor[3] = { 0, 255, 0 };
+	//SNAPLINES
+	bool snapLines = false;
+	bool snapLinesVischeck = false;
+	float SnaplinesMaxDistance = 600;
+	float SnaplinesColor[3] = { 255, 0, 0 };
+	float SnaplinesVisibleColor[3] = { 0, 255, 0 };
+
+	//WATERMARK
+	bool showWatermark = false;
+
+	bool bonesESP = false;
+	//int XMODIFDEBUG = 0; // TO REMOVE
+	//int YMODIFDEBUG = 0; // TO REMOVE
+	//int ZMODIFDEBUG = 0; // TO REMOVE
+	//int XMODIFDEBUG2 = 0; // TO REMOVE
+	//int YMODIFDEBUG2 = 0; // TO REMOVE
+	//int ZMODIFDEBUG2 = 0; // TO REMOVE
 };
 
 class ValueMultiplier {

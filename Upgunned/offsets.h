@@ -13,7 +13,6 @@ class offsetsManager
 {
 public :
 	static const int PROCESSEVENT = 0x10B0CC0;
-	//static const int GWORLD = 0x45DBB40;
 	static const int GOBJECT = 0x44A25D8;
 	static const int GENGINE = 0x45D8280;
 	static const int GETBONEMATRIX = 0x246A380;
@@ -33,10 +32,13 @@ public :
 	static const int FNamePool = 0x448A040;
 	static const int GetNameStringByIndex = 0x1054B70;
 	static const int FNAMETOSTRING = 0xEE3DF0;
-//	static const int K2_GetPawn = 0x8A7D80;
 	static const int IsServer = 0x2679E00;
-	static const int FOV = 0x2776D20;
-	static const int GetFovAngle = 0x27782C0;
+	static const int K2DrawText = 0x2933AF0;
+	static const int ProjectWorldToScreen = 0x2540990;
+	//static const int GWORLD = 0x45DBB40;
+	//	static const int K2_GetPawn = 0x8A7D80;
+//	static const int FOV = 0x2776D20;
+//	static const int GetFovAngle = 0x27782C0;
 #ifdef AESHOOK
 	static const int DecryptData = 0xE69FE0;
 #endif
@@ -53,11 +55,15 @@ public :
 					GETOFFSET(Address, ImageBase, this->FNAMETOSTRING, Native::FNameToString, "FNameToString")
 					GETOFFSET(Address, ImageBase, this->K2DrawLine, Native::K2_DrawLine, "K2_DrawLine")
 					GETOFFSET(Address, ImageBase, this->K2DrawBox, Native::K2_DrawBox, "K2_DrawBox")
+					GETOFFSET(Address, ImageBase, this->K2DrawText, Native::K2_DrawText, "K2_DrawText")
 					//			GETOFFSET(Address, ImageBase, this->K2_GetPawn, Native::K2_GetPawn, "K2_GetPawn")
 						//		GETOFFSET(Address, ImageBase, this->GWORLD, Native::UWorld, "UWorld Proxy")
 					GETOFFSET(Address, ImageBase, this->GOBJECT, Native::GObjects, "GObject")
 					GETOFFSET(Address, ImageBase, this->GENGINE, Native::GEngine, "GEngine Proxy")
 					GETOFFSET(Address, ImageBase, this->IsServer, Native::IsServer, "IsServer")
+					GETOFFSET(Address, ImageBase, this->GETBONEMATRIX, Native::GetBoneMatrix, "GetBoneMatrix")
+					GETOFFSET(Address, ImageBase, this->ProjectWorldToScreen, Native::ProjectWorldToScreen, "ProjectWorldToScreen")
+					GETOFFSET(Address, ImageBase, this->Free, Native::FMemoryFree, "FMemoryFree")
 #ifdef AESHOOK
 					GETOFFSET(Address, ImageBase, this->DecryptData, Native::DecryptData, "DecryptData")
 #endif

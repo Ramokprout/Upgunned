@@ -10,8 +10,18 @@ typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 typedef uintptr_t PTR;
 
 typedef struct {
+	float W, X, Y, Z;
+} FQuat;
+
+typedef struct {
 	float X, Y, Z;
 } FVector;
+
+typedef struct {
+	FQuat		Rotation;
+	FVector 	Scale3D;
+	FVector 	Translation;
+} FTransform;
 
 typedef struct {
 	float X, Y;
@@ -37,14 +47,15 @@ typedef struct {
 	float M[4][4];
 } FMatrix;
 
-class FLinearColor
+struct FLinearColor
 {
-public:
 	float R; //0x0000
 	float G; //0x0004
 	float B; //0x0008
 	float A; //0x000C
 }; //Size: 0x0010
+
+class FString;
 
 namespace Native {
 
@@ -57,10 +68,15 @@ namespace Native {
 	//inline T* (__fastcall* GetGameInstance)(void*);
 	inline void(__fastcall* K2_DrawLine)(void*, FVector2D, FVector2D, float, FLinearColor);
 	inline void(__fastcall* K2_DrawBox)(void*, FVector2D, FVector2D, float, FLinearColor);
+	inline void(__fastcall* K2_DrawText)(void*, void*, FString, FVector2D, FVector2D, FLinearColor, float, FLinearColor, FVector2D, bool, bool, bool, FLinearColor);
 //	inline void*(__fastcall* K2_GetPawn)(void*);
 	inline void* (__fastcall* StaticConstructObject_internal)(void*, void*, void*, int, int, void*, bool, void*, bool);
+	inline void* (__fastcall* GetBoneMatrix)(void*, void*, int);
 	inline bool(__fastcall* IsServer)(void*);
+	inline bool(__fastcall* ProjectWorldToScreen)(void*, void*, void*, bool);//playercontroller, fvector*, fvector2d*, false
+	inline bool(__fastcall* LineOfSightTo)(void*, void*, void*);
 	inline void(__fastcall* DecryptData)(void*, void*, void*);
+	inline void(__fastcall* FMemoryFree)(void*);
 	//inline float(__fastcall* GetFovAngle)(void*);
 	//inline void(__fastcall* FOV)(void*, float);
 	inline Present oPresent;

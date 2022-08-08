@@ -29,6 +29,14 @@ public:
 		return i < Num();
 	}
 
+	inline void FreeArray()
+	{
+		Native::FMemoryFree(Data);
+		Data = nullptr;
+		Count = 0;
+		Max = 0;
+	}
+
 public:
 	T* Data;
 	INT Count;
@@ -180,7 +188,7 @@ struct GObjects
 
 	UObject* GetByIndex(int32_t index) const
 	{
-		int cStart = 0, cEnd = 0;
+/*		int cStart = 0, cEnd = 0;
 		int chunkIndex, chunkSize = 0xFFFF, chunkPos;
 		FUObjectItem* Object;
 
@@ -200,7 +208,7 @@ struct GObjects
 			if (!Object) { return nullptr; }
 			if (IsBadReadPtr(Object->Object, sizeof(Object->Object))) return nullptr;
 			return Object->Object;
-		}
+		}*/
 
 		return nullptr;
 	}

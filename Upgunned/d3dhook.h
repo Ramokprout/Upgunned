@@ -3,7 +3,8 @@
 #include "pch.h"
 #include "Globals.h"
 #include "ue4.h"
-#include "guirenderer.h"
+#include "upgunstructs.h"
+#include "Native.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -61,7 +62,8 @@ Style.Colors[ImGuiCol_NavHighlight] = ImVec4(0.260f, 0.590f, 0.980f, 1.000f);\
 Style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.000f, 1.000f, 1.000f, 0.700f);\
 Style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800f, 0.800f, 0.800f, 0.200f);\
 Style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.800f, 0.800f, 0.800f, 0.350f);\
-io.Fonts->AddFontFromFileTTF("C:/Users/ramok/Downloads/Fonts/arial.ttf", 15.990f);\
+Globals::font = io.Fonts->AddFontFromFileTTF("C:/Users/ramok/Downloads/Fonts/arial.ttf", 15.990f);\
+
 
 namespace d3dhook {
 
@@ -102,7 +104,8 @@ namespace d3dhook {
         pBuffer->Release();
 
         Globals::pContext->OMSetRenderTargets(1, &Globals::mainRenderTargetView, NULL);
-
+        Globals::width = width;
+        Globals::height = height;
         D3D11_VIEWPORT vp;
         vp.Width = width;
         vp.Height = height;
@@ -153,6 +156,10 @@ namespace d3dhook {
                 ID3D11Texture2D* pBackBuffer;
                 pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
                 Globals::pDevice->CreateRenderTargetView(pBackBuffer, NULL, &Globals::mainRenderTargetView);
+                D3D11_TEXTURE2D_DESC backBufferDesc = { 0 };
+                pBackBuffer->GetDesc(&backBufferDesc);
+                Globals::width = backBufferDesc.Width;
+                Globals::height = backBufferDesc.Height;
                 pBackBuffer->Release();
                 Globals::oWndProc = (WNDPROC)SetWindowLongPtr(Globals::window, GWLP_WNDPROC, (LONG_PTR)d3dhook::WndProc);
                 ImGui::CreateContext();
@@ -168,41 +175,145 @@ namespace d3dhook {
                 return Native::oPresent(pSwapChain, SyncInterval, Flags);
         }
 
+
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+
+        ImGui::Begin("##scene", nullptr, ImGuiWindowFlags_NoInputs | ImGuiWindowFlags_NoTitleBar);
+        auto pDrawList = ImGui::GetCurrentWindow()->DrawList;
+        auto& io = ImGui::GetIO();
+        ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Always);
+        ImGui::SetWindowSize(ImVec2(io.DisplaySize.x, io.DisplaySize.y), ImGuiCond_Always);
+        
+        if (Globals::renderFOVCircle) {
+            pDrawList->AddCircle(ImVec2(io.DisplaySize.x / 2, io.DisplaySize.y / 2), Globals::AimbotFOV, ImColor(Globals::FOVCircleColor[0], Globals::FOVCircleColor[1], Globals::FOVCircleColor[2]), 0, 2);
+        }
+
+        if (Globals::showWatermark) {
+           // pDrawList->AddText(, , );
+            pDrawList->AddText(Globals::font, 18, { Globals::width / 2.6f, 30 }, ImColor{ 255, 0, 0 }, "github.com/Ramokprout/Upgunned - build 03/04/2022");
+        }
+
+        auto localPlayer = ue4::getLocalPlayer();
+        if (localPlayer->PlayerController) {
+            auto PlayerController = localPlayer->PlayerController;
+            auto players = ue4::getPlayers();
+        
+          for (auto player : players) {
+                if (ue4::IsLocalPlayer(player)) continue;
+                auto distance = ue4::getDistance(PlayerController->Character, player) / 15;
+                FVector Root = { 0 };
+                ue4::GetBoneLocation(player->Mesh, &Root, UpGunBoneIds::ROOT);
+                FVector RawRoot = Root;
+                bool gotRawRootW2S = false;
+                FVector2D RootPosScreenPos = { 0 };
+
+                if (Globals::boxesESP || Globals::snapLines) {
+                    gotRawRootW2S = Native::ProjectWorldToScreen(PlayerController, &RawRoot, &RootPosScreenPos, false);
+                }
+#ifdef _DEBUG
+                if (Globals::bonesESP) {
+                    auto socket_names = ue4::GetAllSocketNames(player->Mesh);
+                    for (int i = 0; i < socket_names.Num(); i++) {
+                        FVector BonePos = { 0 };
+                        ue4::GetBoneLocation(player->Mesh, &BonePos, i);
+                        FVector BonePosscren = {0};
+                        if (Native::ProjectWorldToScreen(PlayerController, &BonePos, &BonePosscren, false)) {
+                            pDrawList->AddText(ImVec2(BonePosscren.X, BonePosscren.Y), ImColor{0, 255, 0}, std::to_string(i).c_str());
+                        }
+                    }
+
+                    Native::FMemoryFree(socket_names.Data);
+                }
+#endif
+                if (Globals::boxesESP) {
+                    FVector Head = { 0 };
+                    ue4::GetBoneLocation(player->Mesh, &Head, UpGunBoneIds::HEAD);
+
+
+                    Head.Z += 30;
+                  //  Root->Z -= 5;
+
+                    Root.Y += -35;
+                    Head.Y += 35;
+
+
+
+                    FVector2D screenPosHead = { 0 };
+                    FVector2D screenPosRoot = { 0 };
+                    if (distance <= Globals::ESPMaxDistance) {
+                        if (Native::ProjectWorldToScreen(PlayerController, &Head, &screenPosHead, false)
+                            && Native::ProjectWorldToScreen(PlayerController, &Root, &screenPosRoot, false)) {
+
+                            ImVec2 bottomLeft = { screenPosHead.X,screenPosRoot.Y };
+                            ImVec2 topRight = { screenPosRoot.X, screenPosHead.Y };
+                            ImColor color = { Globals::ESPColor[0], Globals::ESPColor[1], Globals::ESPColor[2] };
+                            if (Globals::boxesESPVischeck && ue4::IsVisible(PlayerController, player)) {
+                                color = { Globals::ESPVisibleColor[0], Globals::ESPVisibleColor[1], Globals::ESPVisibleColor[2] };
+                            }
+                            pDrawList->AddRect(bottomLeft, topRight, color);
+                        }
+                    }
+
+                }
+
+                if (Globals::snapLines) {
+      
+                    if (distance <= Globals::SnaplinesMaxDistance) {
+                        if (gotRawRootW2S) {
+                            //        Native::K2_DrawLine(canvas, FVector2D{ Globals::width / 2, Globals::height }, playerDest, 1.5f, { 255, 0, 0, 1 });
+                            ImColor color = { Globals::SnaplinesColor[0], Globals::SnaplinesColor[1], Globals::SnaplinesColor[2] };
+                            if (Globals::snapLinesVischeck && ue4::IsVisible(PlayerController, player)) {
+                                //Globals::
+                                color = { Globals::SnaplinesVisibleColor[0], Globals::SnaplinesVisibleColor[1], Globals::SnaplinesVisibleColor[2] };
+                            }
+                            pDrawList->AddLine(ImVec2(Globals::width/2, Globals::height), ImVec2(RootPosScreenPos.X, RootPosScreenPos.Y), color);
+                        }
+                    }
+                }
+            }
+
+            players.clear();
+        }
+
+    
+        pDrawList->PushClipRectFullScreen();
+        ImGui::End();
+        ImGui::PopStyleVar(2);
+        ImGui::PopStyleColor();
+
         if (Globals::showMenu)
         {
-            ImGui_ImplDX11_NewFrame();
-            ImGui_ImplWin32_NewFrame();
-            ImGui::NewFrame();
-
-            ImGui::SetWindowSize(ImVec2(700.000f, 450.000f), ImGuiCond_Once);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(9.000f, 15.000f));
+            ImGui::SetNextWindowSize(ImVec2(750.000f, 450.000f), ImGuiCond_Once);
             ImGui::Begin("Upgunned", &Globals::showMenu);
 
             bool isServer = ue4::IsServer();
             auto localPlayer = ue4::getLocalPlayer();
 
-           // if (!IsBadReadPtr(&isServer, sizeof(bool)) && !isServer) {
             if (isServer) {
                 if (ImGui::Button("Host", ImVec2(125.000f, 30.000f)))
                 {
                     Globals::tab = 0;
                 }
+                ImGui::SameLine();
             }
             else if (Globals::tab == 0) {
                 Globals::tab++;
             }
-
-
-         //   if (!isServer && Globals::tab == 0) Globals::tab + 1;
-
-            ImGui::SameLine();
-
+#ifdef _DEBUG
             if (ImGui::Button("Debug", ImVec2(125.000f, 30.000f)))
             {
                 Globals::tab = 1;
+       
             }         
-
             ImGui::SameLine();
-
+#endif
             if (ImGui::Button("Visuals", ImVec2(125.000f, 30.000f)))
             {
                 Globals::tab = 2;
@@ -233,39 +344,6 @@ namespace d3dhook {
                 ImGui::SetCursorPos({ size.x + 223, ImGui::GetCursorPosY() });
                 if (ImGui::Button("Reset##second")) {
                     world->PersistentLevel->WorldSettings->TimeDilatation = 1;
-                }
-
-                
-
-            }
-            else if (Globals::tab == 1) {
-            //    ImGui::Text("Empty lol");
-                if (ImGui::Button("Print Addresses")) {
-                    auto LocalPlayer = ue4::getLocalPlayer();
-                    PRINT_PTR(LocalPlayer, "LocalPlayer");
-                    if (LocalPlayer->PlayerController) {
-                        PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
-                    }
-    
-                }
-            }
-            else if(Globals::tab == 2) {
-                if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
-                    auto LocalPlayer = ue4::getLocalPlayer();
-                    auto cam = LocalPlayer->PlayerController->Character->Camera;
-                    cam->FieldOfView = (float)Globals::FOV;
-                }
-            }
-            else if (Globals::tab == 3) {
-                if (ImGui::Button("Build Console")) {
-                    ue4::BuildConsole();
-                    ue4::BuildCheatManager();
-#ifndef DEBUGLOG
-                    std::cout << termcolor::bright_green
-                        << "Built UConsole and CheatManager successfully"
-                        << termcolor::reset
-                        << std::endl;
-#endif
                 }
 
                 if (Globals::GWorldTrigger != world) {
@@ -364,7 +442,7 @@ namespace d3dhook {
                         }
 
                         BaseCharacterAttributeSet->Health.CurrentValue = BaseCharacterAttributeSet->MaxHealth.CurrentValue * Globals::HealthMultiplier->Multiplier;
-                    }      
+                    }
                     ImGui::SetNextItemWidth(150.000f);
                     if (ImGui::SliderFloat("WalkSpeed Multiplier", &Globals::WalkSpeedMultiplier->Multiplier, 0.5f, 4.f)) {
                         if (!Globals::WalkSpeedMultiplier->enabled) {
@@ -385,25 +463,99 @@ namespace d3dhook {
                         Globals::HealthMultiplier->enabled = false;
                         Globals::HealthMultiplier->Multiplier = 1;
                         Globals::HealthMultiplier->OriginalValue = 0.f;
-                       
-
-
                     }
-                 
+
                 }
+
+
+            }
+            else if (Globals::tab == 1) {
+#ifdef _DEBUG
+                if (ImGui::Button("Print Addresses")) {
+                    auto LocalPlayer = ue4::getLocalPlayer();
+                    PRINT_PTR(LocalPlayer, "LocalPlayer");
+                    if (LocalPlayer->PlayerController) {
+                        PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
+                    }
+    
+                }
+
+
+          //     ImGui::SliderInt("X modify#1", &Globals::XMODIFDEBUG, -100, 100);
+          //    ImGui::SliderInt("Y modify#1", &Globals::YMODIFDEBUG, -100, 100);
+                ////ImGui::SliderInt("Z modify#1", &Globals::ZMODIFDEBUG, -100, 100);            
+                ////
+                ////ImGui::SliderInt("X modify 2#2", &Globals::XMODIFDEBUG2, -100, 100);
+                ////ImGui::SliderInt("Y modify 2#2", &Globals::YMODIFDEBUG2, -100, 100);
+                ////ImGui::SliderInt("Z modify 2#2", &Globals::ZMODIFDEBUG2, -100, 100);
+                if (ImGui::Button("AimAT ClosestPlayer")) {
+                    auto players = ue4::getPlayers();
+                    FVector HeadPos = { 0 };
+                    auto closestVisiblePlayer = ue4::GetClosestPlayer(players, &HeadPos, true);
+                    if (!closestVisiblePlayer) {
+                        printf("Not Found");
+                   }
+
+                    PRINT_PTR(closestVisiblePlayer->Mesh, "ClosestVisiblePlayer mesh");
+                //    ue4::AimAt(ue4::getLocalPlayer()->PlayerController, HeadPos);
+                }
+#else
+            ImGui::Text("This menu is avaliable in debug mode only");
+#endif
+            }
+            else if(Globals::tab == 2) {
+                if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
+                    auto LocalPlayer = ue4::getLocalPlayer();
+                    auto cam = LocalPlayer->PlayerController->Character->Camera;
+                    cam->FieldOfView = (float)Globals::FOV;
+                }
+
+                ImGui::Checkbox("ESP", &Globals::boxesESP);
+                ImGui::Checkbox("ESP VisCheck", &Globals::boxesESPVischeck);
+                ImGui::Checkbox("Bones ESP", &Globals::bonesESP);
+                ImGui::Checkbox("Snaplines", &Globals::snapLines);
+                ImGui::Checkbox("Snaplines VisCheck", &Globals::snapLinesVischeck);
+                ImGui::Checkbox("Render Aimbot FOV", &Globals::renderFOVCircle);
+                ImGui::Checkbox("Show Watermark", &Globals::showWatermark);
+
+                ImGui::SliderFloat("ESP Max Distance##ESPDIST", &Globals::ESPMaxDistance, 0, 1000);
+                ImGui::SliderFloat("Snaplines Max Distance##SNAPDIST", &Globals::SnaplinesMaxDistance, 0, 1000);
+                ImGui::SliderFloat("Aimbot FOV##SNAPDIST", &Globals::AimbotFOV, 10, 700);
+              
+                ImGui::ColorEdit3("FOV Circle Color", Globals::FOVCircleColor, ImGuiColorEditFlags_NoInputs);
+                ImGui::ColorEdit3("Snaplines Color", Globals::SnaplinesColor, ImGuiColorEditFlags_NoInputs);
+                ImGui::ColorEdit3("Snapline Visible Color", Globals::SnaplinesVisibleColor, ImGuiColorEditFlags_NoInputs);
+                ImGui::ColorEdit3("ESP Color", Globals::ESPColor, ImGuiColorEditFlags_NoInputs);
+                ImGui::ColorEdit3("ESP Visible Color", Globals::ESPVisibleColor, ImGuiColorEditFlags_NoInputs);
+            }
+            else if (Globals::tab == 3) {
+                if (ImGui::Button("Build Console")) {
+                    ue4::BuildConsole();
+                    ue4::BuildCheatManager();
+#ifndef DEBUGLOG
+                    std::cout << termcolor::bright_green
+                        << "Built UConsole and CheatManager successfully"
+                        << termcolor::reset
+                        << std::endl;
+#endif
+                }
+
 
             }
 
-
-
+            ImGui::PopStyleVar(1);
             ImGui::End();
-            Globals::pContext->OMSetRenderTargets(1, &Globals::mainRenderTargetView, NULL);
-            ImGui::Render();
-
-
-            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
         }
 
+
+
+
+
+        ImGui::EndFrame();
+        ImGui::Render();
+
+        Globals::pContext->OMSetRenderTargets(1, &Globals::mainRenderTargetView, NULL);
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
         return Native::oPresent(pSwapChain, SyncInterval, Flags);
     }
 }
