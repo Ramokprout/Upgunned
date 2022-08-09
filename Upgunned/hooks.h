@@ -40,15 +40,42 @@ namespace hooks {
 				"OnRep_OverHealth"
 		};
 		bool noLog = false;
-		for (auto ignoreFunction : ignoredFunctions) {
+/*		for (auto ignoreFunction : ignoredFunctions) {
 			if (nameOfFunction.contains(ignoreFunction)) {
 				noLog = true;
 			}
+		}*/
+
+		auto name = dis->GetName();
+		if (std::wstring(name).contains(L"BP_Weapon_RifleProjectile_C") && nameOfFunction.contains("BndEvt__BP_Weapon_RifleProjectile_CollisionSphere_K2Node_ComponentBoundEvent_0")) {
+			noLog = false;
 		}
-		if (!noLog) {
-			printf("Name Of Fct : %s\n", nameOfFunction.c_str());
+		else {
+			noLog = true;
 		}
 
+
+
+		if (!noLog) {
+				struct paramsStruct {
+					void* HitComponent;
+					void* OtherActor;
+					void* OtherComp;
+					FVector NormalImpulse;
+					struct {
+						void* Actor;
+						uint8_t bBlockingHit : 1;
+						FName BoneName;
+						uint8_t bStartPenetrating : 1;
+						void* Component;
+						float Distance;
+					} HitResult;
+				};
+
+				auto structuredParams = (paramsStruct*)params;
+				structuredParams->OtherActor = ue4::getLocalPlayer()->PlayerController->Character; //bullet teleport lol
+		}
+		Native::FMemoryFree(name);
 #endif
 
 		return Native::oProcessEvent(dis, fn, params);

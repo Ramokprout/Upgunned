@@ -91,8 +91,8 @@ public:
 	char pad_0000[152]; //0x0000
 	class TArray<Character*> AActors; //0x0098
 	char pad_00B0[424]; //0x00B0
-	class WorldSettings* WorldSettings; //0x0268
-	char pad_0270[424]; //0x0270
+	class WorldSettings* WorldSettings; //0x0258
+	char pad_0260[424]; //0x0260
 }; //Size: 0x0418
 
 

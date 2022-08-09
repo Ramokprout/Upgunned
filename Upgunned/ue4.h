@@ -120,11 +120,52 @@ public:
 		return player->Mesh->LastRenderTimeOnScreen + fVisionTick >= player->Mesh->LastSumbit && params.ReturnValue;
 	}
 
-	static void AimAt(PlayerController* Controller, FVector2D HeadW2SLocation) {
-		float headX = HeadW2SLocation.X - Globals::width / 2;
-		float headY = HeadW2SLocation.Y - Globals::height / 2;
+	static void AimAt(FVector2D HeadW2SLocation) {
+		float ScreenCenterX = (Globals::width / 2);
+		float ScreenCenterY = (Globals::height / 2);
+		float x = HeadW2SLocation.X;
+		float y = HeadW2SLocation.Y;
 
-		mouse_event(MOUSEEVENTF_MOVE, headX * (static_cast<float>(Globals::AimbotSpeedX)/10), headY * (static_cast<float>(Globals::AimbotSpeedY) / 10), NULL, NULL);
+		float TargetX = 0;
+		float TargetY = 0;
+
+		if (x != 0)
+		{
+			if (x > ScreenCenterX)
+			{
+				TargetX = -(ScreenCenterX - x);
+				TargetX /= Globals::AimbotSpeedX;
+				if (TargetX + ScreenCenterX > ScreenCenterX * 2) TargetX = 0;
+			}
+
+			if (x < ScreenCenterX)
+			{
+				TargetX = x - ScreenCenterX;
+				TargetX /= Globals::AimbotSpeedX;
+				if (TargetX + ScreenCenterX < 0) TargetX = 0;
+			}
+		}
+
+		if (y != 0)
+		{
+			if (y > ScreenCenterY)
+			{
+				TargetY = -(ScreenCenterY - y);
+				TargetY /= Globals::AimbotSpeedY;
+				if (TargetY + ScreenCenterY > ScreenCenterY * 2) TargetY = 0;
+			}
+
+			if (y < ScreenCenterY)
+			{
+				TargetY = y - ScreenCenterY;
+				TargetY /= Globals::AimbotSpeedY;
+				if (TargetY + ScreenCenterY < 0) TargetY = 0;
+			}
+		}
+
+		//* (static_cast<float>(Globals::AimbotSpeedX)/10)
+		//* (static_cast<float>(Globals::AimbotSpeedY) / 10)
+		mouse_event(MOUSEEVENTF_MOVE, TargetX, TargetY, NULL, NULL);
 	}
 
 	static bool LineOfSightTo(PlayerController* Controller, Character* player) {

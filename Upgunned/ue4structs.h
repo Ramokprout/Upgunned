@@ -111,7 +111,7 @@ public:
 		return FALSE;
 	}
 
-	std::wstring GetName()
+	PWCHAR GetName()
 	{
 		FString str = FString();
 		Native::FNameToString(&Name, &str);
@@ -124,10 +124,15 @@ public:
 
 		for (auto outer = Outer; outer; outer = outer->Outer)
 		{
-			temp = outer->GetName() + L"." + temp;
+			auto name = outer->GetName();
+			temp = std::wstring(name) + L"." + temp;
+			Native::FMemoryFree(name);
 		}
-
-		temp = reinterpret_cast<UObject*>(Class)->GetName() + L" " + temp + this->GetName();
+		auto className = reinterpret_cast<UObject*>(Class)->GetName();
+		auto objName = this->GetName();
+		temp = std::wstring(className) + L" " + temp + objName;
+		Native::FMemoryFree(className);
+		Native::FMemoryFree(objName);
 		return temp;
 	}
 };

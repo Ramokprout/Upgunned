@@ -5,7 +5,7 @@
 #include "ue4.h"
 #include "upgunstructs.h"
 #include "Native.h"
-
+//#define _DEBUG
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 std::pair<const char*, UpGunBoneIds> BoneArray[5] = {
@@ -261,10 +261,10 @@ namespace d3dhook {
                         FVector2D BonePosW2S = { 0 };
                         ue4::GetBoneLocation(closestVisiblePlayer->Mesh, &BonePos, Globals::Aimbot_Pos);
                         if (Globals::Aimbot_Pos == UpGunBoneIds::HEAD) {
-                            BonePos.Z += 15;
+                            BonePos.Z += 5;
                         }
                         if (Native::ProjectWorldToScreen(localPlayer->PlayerController, &BonePos, &BonePosW2S, false)) {
-                            ue4::AimAt(PlayerController, BonePosW2S);
+                            ue4::AimAt(BonePosW2S);
                         }
                     }
                 }
@@ -300,6 +300,9 @@ namespace d3dhook {
                     Native::FMemoryFree(socket_names.Data);
                 }
 #endif
+
+
+
                 if (Globals::boxesESP) {
                     FVector Head = { 0 };
                     ue4::GetBoneLocation(player->Mesh, &Head, UpGunBoneIds::HEAD);
@@ -398,7 +401,7 @@ namespace d3dhook {
                 auto PlayerController = localPlayer->PlayerController;
                 auto character = PlayerController->Character;
                 ImGui::SetNextItemWidth(200.000f);
-                ImVec2 size;
+                ImVec2 size = {0, 0};
                 size = ImGui::CalcTextSize("Pawn CustomTimeDilatation");
                 ImGui::SliderFloat("Pawn CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 15.f);
                 ImGui::SameLine();
@@ -408,7 +411,9 @@ namespace d3dhook {
                 }
                 size = ImGui::CalcTextSize("World CustomTimeDilatation");
                 ImGui::SetNextItemWidth(200.000f);
-                ImGui::SliderFloat("World CustomTimeDilatation", &world->PersistentLevel->WorldSettings->TimeDilatation, 0.f, 15.f);
+                float caca = 0;
+                //world->PersistentLevel->WorldSettings->TimeDilatation
+                ImGui::SliderFloat("World CustomTimeDilatation", &caca, 0.f, 15.f);
                 ImGui::SameLine();
                 ImGui::SetCursorPos({ size.x + 223, ImGui::GetCursorPosY() });
                 if (ImGui::Button("Reset##second")) {
@@ -550,6 +555,28 @@ namespace d3dhook {
                 }
 
 
+                if (ImGui::Button("Dump Actors")) {
+                    auto actors = UpgunnedEngine::GetWorld()->PersistentLevel->AActors;
+                    std::wofstream stream("actorsdump.txt");
+
+                    for (int i = 0; i < actors.Num(); i++) {
+                        auto actor = actors[i];
+                        if (actor == nullptr || !actor) continue;
+                        auto UobjectActor = (UObject*)actor;
+                        if (IsBadReadPtr(&UobjectActor->Name, sizeof(FName))) continue;
+                        FString str = FString();
+                        Native::FNameToString(&UobjectActor->Name, &str);
+                        std::wstring wStr = std::wstring(str.c_str());
+                        Native::FMemoryFree(str.c_str());
+                        stream << L"[" << std::to_wstring(i) << L"] " << wStr << std::endl;
+                        wStr.clear();
+                    }
+
+                    stream.close();
+                }
+
+
+
           //     ImGui::SliderInt("X modify#1", &Globals::XMODIFDEBUG, -100, 100);
           //    ImGui::SliderInt("Y modify#1", &Globals::YMODIFDEBUG, -100, 100);
                 ////ImGui::SliderInt("Z modify#1", &Globals::ZMODIFDEBUG, -100, 100);            
@@ -571,12 +598,14 @@ namespace d3dhook {
 
                 ImGui::Checkbox("ESP", &Globals::boxesESP);
                 ImGui::Checkbox("ESP VisCheck", &Globals::boxesESPVischeck);
+#ifdef _DEBUG
                 ImGui::Checkbox("Bones ESP", &Globals::bonesESP);
+#endif
                 ImGui::Checkbox("Snaplines", &Globals::snapLines);
                 ImGui::Checkbox("Snaplines VisCheck", &Globals::snapLinesVischeck);
                 ImGui::Checkbox("Render Aimbot FOV", &Globals::renderFOVCircle);
                 ImGui::Checkbox("Show Watermark", &Globals::showWatermark);
-                if (ImGui::Checkbox("Show FPS", &Globals::showFPS));
+                ImGui::Checkbox("Show FPS", &Globals::showFPS);
 
                 ImGui::SliderFloat("ESP Max Distance##ESPDIST", &Globals::ESPMaxDistance, 0, 1000);
                 ImGui::SliderFloat("Snaplines Max Distance##SNAPDIST", &Globals::SnaplinesMaxDistance, 0, 1000);
@@ -640,8 +669,8 @@ namespace d3dhook {
 
                 ImGui::Checkbox("Enable Aimbot", &Globals::AimbotEnabled);
                 ImGui::SliderFloat("Aimbot FOV##AIMFOV", &Globals::AimbotFOV, 10, 700);
-                ImGui::SliderInt("Aimbot Speed X##AIMSMOOTHX", &Globals::AimbotSpeedX, 1, 15);
-                ImGui::SliderInt("Aimbot Speed Y##AIMSMOOTHY", &Globals::AimbotSpeedY, 1, 15);
+                ImGui::SliderInt("Aimbot Smooth X##AIMSMOOTHX", &Globals::AimbotSpeedX, 1, 15);
+                ImGui::SliderInt("Aimbot Smooth Y##AIMSMOOTHY", &Globals::AimbotSpeedY, 1, 15);
             }
 
             ImGui::PopStyleVar(1);
