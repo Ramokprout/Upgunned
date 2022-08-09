@@ -34,6 +34,7 @@ DWORD WINAPI Main(HMODULE lpParam) {
     Globals::RifleCriticalHitChanceMultiplier = new ValueMultiplier();
     Globals::HealthMultiplier = new ValueMultiplier();
     Globals::WalkSpeedMultiplier = new ValueMultiplier();
+    Globals::ProcessPid = GetCurrentProcessId();
 
     offsetsManager* offsetManager = new offsetsManager();
     offsetManager->Initialize();

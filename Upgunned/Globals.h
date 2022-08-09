@@ -32,10 +32,14 @@ namespace Globals {
 	float width = 0;
 	float height = 0;
 	ImFont* font = nullptr;
+	DWORD ProcessPid = 0;
 
 	//AIMBOT
 	float AimbotFOV = 180;
 	bool renderFOVCircle = false;
+	bool AimbotEnabled = false;
+	int AimbotSpeedX = 5;
+	int AimbotSpeedY = 5;
 	float FOVCircleColor[3] = { 255, 0, 0 };
 	//ESP
 	bool boxesESP = false;
@@ -52,8 +56,13 @@ namespace Globals {
 
 	//WATERMARK
 	bool showWatermark = false;
+	//FPS
+	bool showFPS = false;
 
 	bool bonesESP = false;
+
+	AimbotKey Aimbot_Key = AimbotKey::MOUSE_R;
+	UpGunBoneIds Aimbot_Pos = UpGunBoneIds::HEAD;
 	//int XMODIFDEBUG = 0; // TO REMOVE
 	//int YMODIFDEBUG = 0; // TO REMOVE
 	//int ZMODIFDEBUG = 0; // TO REMOVE

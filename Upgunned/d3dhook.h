@@ -8,7 +8,48 @@
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+std::pair<const char*, UpGunBoneIds> BoneArray[5] = {
+        std::make_pair("HEAD", UpGunBoneIds::HEAD),
+        std::make_pair("NECK", UpGunBoneIds::NECK),
+        std::make_pair("PENIS", UpGunBoneIds::PELVIS),
+        std::make_pair("FOOT", UpGunBoneIds::ROOT),
+        std::make_pair("CHEST", UpGunBoneIds::CHEST)
+};
 
+std::pair<const char*, AimbotKey> AimbotKeys[7] = {
+        std::make_pair("MOUSE_L", AimbotKey::MOUSE_L),
+        std::make_pair("MOUSE_MIDDLE", AimbotKey::MOUSE_MIDDLE),
+        std::make_pair("MOUSE_R", AimbotKey::MOUSE_R),
+        std::make_pair("CONTROL", AimbotKey::CONTROL),
+        std::make_pair("ALT", AimbotKey::ALT),
+        std::make_pair("SHIFT", AimbotKey::SHIFT),
+        std::make_pair("TAB", AimbotKey::TAB),
+};
+
+
+std::pair<const char*, AimbotKey> getCurrentAimbotKey() {
+    size_t n = sizeof(AimbotKeys) / sizeof(AimbotKeys[0]);
+    for (int i = 0; i < n; i++) {
+        auto aimkey = AimbotKeys[i];
+        if (Globals::Aimbot_Key == aimkey.second) {
+            return aimkey;
+        }
+    }
+
+    return std::make_pair("MOUSE_R", AimbotKey::MOUSE_R);
+}
+
+std::pair<const char*, UpGunBoneIds> getCurrentAimbotLocation() {
+    size_t n = sizeof(BoneArray) / sizeof(BoneArray[0]);
+    for (int i = 0; i < n; i++) {
+        auto bonePair = BoneArray[i];
+        if (Globals::Aimbot_Pos == bonePair.second) {
+            return bonePair;
+        }
+    }
+
+    return  std::make_pair("HEAD", UpGunBoneIds::HEAD);
+}
 
 #define INITSTYLE \
 auto& Style = ImGui::GetStyle();\
@@ -195,14 +236,42 @@ namespace d3dhook {
         }
 
         if (Globals::showWatermark) {
-           // pDrawList->AddText(, , );
             pDrawList->AddText(Globals::font, 18, { Globals::width / 2.55f, 30 }, ImColor{ 255, 0, 0 }, "github.com/Ramokprout/Upgunned");
         }
+
+        if (Globals::showFPS) {
+            pDrawList->AddText(Globals::font, 18, { Globals::width / 2.4f, 50 }, ImColor{ 0, 255, 0 }, std::format("FPS Counter: {}", static_cast<int>(ImGui::GetIO().Framerate)).c_str());
+        }
+
+
 
         auto localPlayer = ue4::getLocalPlayer();
         if (localPlayer->PlayerController) {
             auto PlayerController = localPlayer->PlayerController;
             auto players = ue4::getPlayers();
+
+            if (Globals::AimbotEnabled) {
+                auto hwnd = GetForegroundWindow();
+                DWORD Pid;
+                GetWindowThreadProcessId(hwnd, &Pid);
+                if (Globals::showMenu == false && GetAsyncKeyState(Globals::Aimbot_Key) && Pid == Globals::ProcessPid) {
+                    FVector BonePos = { 0 };
+                    auto closestVisiblePlayer = ue4::GetClosestPlayer(PlayerController, players, nullptr, true, Globals::AimbotFOV);
+                    if (closestVisiblePlayer) {
+                        FVector2D BonePosW2S = { 0 };
+                        ue4::GetBoneLocation(closestVisiblePlayer->Mesh, &BonePos, Globals::Aimbot_Pos);
+                        if (Globals::Aimbot_Pos == UpGunBoneIds::HEAD) {
+                            BonePos.Z += 15;
+                        }
+                        if (Native::ProjectWorldToScreen(localPlayer->PlayerController, &BonePos, &BonePosW2S, false)) {
+                            ue4::AimAt(PlayerController, BonePosW2S);
+                        }
+                    }
+                }
+            }
+
+
+
         
           for (auto player : players) {
                 if (ue4::IsLocalPlayer(player)) continue;
@@ -237,19 +306,15 @@ namespace d3dhook {
 
 
                     Head.Z += 30;
-                  //  Root->Z -= 5;
 
                     Root.Y += -35;
                     Head.Y += 35;
-
-
 
                     FVector2D screenPosHead = { 0 };
                     FVector2D screenPosRoot = { 0 };
                     if (distance <= Globals::ESPMaxDistance) {
                         if (Native::ProjectWorldToScreen(PlayerController, &Head, &screenPosHead, false)
                             && Native::ProjectWorldToScreen(PlayerController, &Root, &screenPosRoot, false)) {
-
                             ImVec2 bottomLeft = { screenPosHead.X,screenPosRoot.Y };
                             ImVec2 topRight = { screenPosRoot.X, screenPosHead.Y };
                             ImColor color = { Globals::ESPColor[0], Globals::ESPColor[1], Globals::ESPColor[2] };
@@ -266,10 +331,8 @@ namespace d3dhook {
       
                     if (distance <= Globals::SnaplinesMaxDistance) {
                         if (gotRawRootW2S) {
-                            //        Native::K2_DrawLine(canvas, FVector2D{ Globals::width / 2, Globals::height }, playerDest, 1.5f, { 255, 0, 0, 1 });
                             ImColor color = { Globals::SnaplinesColor[0], Globals::SnaplinesColor[1], Globals::SnaplinesColor[2] };
                             if (Globals::snapLinesVischeck && ue4::IsVisible(PlayerController, player)) {
-                                //Globals::
                                 color = { Globals::SnaplinesVisibleColor[0], Globals::SnaplinesVisibleColor[1], Globals::SnaplinesVisibleColor[2] };
                             }
                             pDrawList->AddLine(ImVec2(Globals::width/2, Globals::height), ImVec2(RootPosScreenPos.X, RootPosScreenPos.Y), color);
@@ -290,8 +353,8 @@ namespace d3dhook {
         if (Globals::showMenu)
         {
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(9.000f, 15.000f));
-            ImGui::SetNextWindowSize(ImVec2(750.000f, 450.000f), ImGuiCond_Once);
-            ImGui::Begin("Upgunned", &Globals::showMenu);
+            ImGui::SetNextWindowSize(ImVec2(800.000f, 500.000f), ImGuiCond_Once);
+            ImGui::Begin("Upgunned", &Globals::showMenu, ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize);
 
             bool isServer = ue4::IsServer();
             auto localPlayer = ue4::getLocalPlayer();
@@ -319,7 +382,13 @@ namespace d3dhook {
                 Globals::tab = 2;
             }   
             ImGui::SameLine();
-            if (ImGui::Button("Exploits", ImVec2(125.000f, 30.000f)))
+
+            if (ImGui::Button("Aimbot", ImVec2(125, 30))) {
+                Globals::tab = 4;
+            }
+            ImGui::SameLine();
+
+            if (ImGui::Button("Misc", ImVec2(125.000f, 30.000f)))
             {
                 Globals::tab = 3;
             }
@@ -488,17 +557,7 @@ namespace d3dhook {
                 ////ImGui::SliderInt("X modify 2#2", &Globals::XMODIFDEBUG2, -100, 100);
                 ////ImGui::SliderInt("Y modify 2#2", &Globals::YMODIFDEBUG2, -100, 100);
                 ////ImGui::SliderInt("Z modify 2#2", &Globals::ZMODIFDEBUG2, -100, 100);
-                if (ImGui::Button("AimAT ClosestPlayer")) {
-                    auto players = ue4::getPlayers();
-                    FVector HeadPos = { 0 };
-                    auto closestVisiblePlayer = ue4::GetClosestPlayer(players, &HeadPos, true);
-                    if (!closestVisiblePlayer) {
-                        printf("Not Found");
-                   }
 
-                    PRINT_PTR(closestVisiblePlayer->Mesh, "ClosestVisiblePlayer mesh");
-                //    ue4::AimAt(ue4::getLocalPlayer()->PlayerController, HeadPos);
-                }
 #else
             ImGui::Text("This menu is avaliable in debug mode only");
 #endif
@@ -517,10 +576,10 @@ namespace d3dhook {
                 ImGui::Checkbox("Snaplines VisCheck", &Globals::snapLinesVischeck);
                 ImGui::Checkbox("Render Aimbot FOV", &Globals::renderFOVCircle);
                 ImGui::Checkbox("Show Watermark", &Globals::showWatermark);
+                if (ImGui::Checkbox("Show FPS", &Globals::showFPS));
 
                 ImGui::SliderFloat("ESP Max Distance##ESPDIST", &Globals::ESPMaxDistance, 0, 1000);
                 ImGui::SliderFloat("Snaplines Max Distance##SNAPDIST", &Globals::SnaplinesMaxDistance, 0, 1000);
-                ImGui::SliderFloat("Aimbot FOV##SNAPDIST", &Globals::AimbotFOV, 10, 700);
               
                 ImGui::ColorEdit3("FOV Circle Color", Globals::FOVCircleColor, ImGuiColorEditFlags_NoInputs);
                 ImGui::ColorEdit3("Snaplines Color", Globals::SnaplinesColor, ImGuiColorEditFlags_NoInputs);
@@ -541,6 +600,48 @@ namespace d3dhook {
                 }
 
 
+            }
+            else if (Globals::tab == 4) {
+            auto currentPos = getCurrentAimbotLocation();
+                if (ImGui::BeginCombo("Aimbot Position", currentPos.first)) {
+                    size_t n = sizeof(BoneArray) / sizeof(BoneArray[0]);
+                    for (int i = 0; i < n; i++) {
+                        auto boneName = BoneArray[i];
+                        bool selected = Globals::Aimbot_Pos == boneName.second;
+
+                        if (ImGui::Selectable(boneName.first, selected)) {
+                            Globals::Aimbot_Pos = boneName.second;
+                        }
+
+                        if (selected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }   
+                
+                auto currentKey = getCurrentAimbotKey();
+                if (ImGui::BeginCombo("Aimbot Key", currentKey.first)) {
+                    size_t n = sizeof(AimbotKeys) / sizeof(AimbotKeys[0]);
+                    for (int i = 0; i < n; i++) {
+                        auto aimbotKey = AimbotKeys[i];
+                        bool selected = Globals::Aimbot_Key == aimbotKey.second;
+
+                        if (ImGui::Selectable(aimbotKey.first, selected)) {
+                            Globals::Aimbot_Key = aimbotKey.second;
+                        }
+
+                        if (selected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::Checkbox("Enable Aimbot", &Globals::AimbotEnabled);
+                ImGui::SliderFloat("Aimbot FOV##AIMFOV", &Globals::AimbotFOV, 10, 700);
+                ImGui::SliderInt("Aimbot Speed X##AIMSMOOTHX", &Globals::AimbotSpeedX, 1, 15);
+                ImGui::SliderInt("Aimbot Speed Y##AIMSMOOTHY", &Globals::AimbotSpeedY, 1, 15);
             }
 
             ImGui::PopStyleVar(1);

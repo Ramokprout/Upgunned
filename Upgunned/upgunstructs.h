@@ -6,6 +6,17 @@
 #include "ue4structs.h"
 
 
+enum AimbotKey {
+	MOUSE_L = 0x02,
+	MOUSE_R = 0x01,
+	MOUSE_MIDDLE = 0x04,
+	SHIFT = 0x10,
+	CONTROL = 0x11,
+	ALT = 0x12,
+	TAB = 0x09
+};
+
+
 
 class UObject;
 class Character;
@@ -22,6 +33,7 @@ enum UpGunBoneIds {
 	HEAD = 6,
 	NECK = 5,
 	PELVIS = 1,
+	CHEST = 4,
 	ROOT = 0,
 };
 

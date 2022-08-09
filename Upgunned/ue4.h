@@ -66,7 +66,7 @@ public:
 		return distance;
 	}
 
-	static Character* GetClosestPlayer(std::vector<Character*> players, FVector* HeadPos = nullptr, bool mustBeVisible = true) {
+	static Character* GetClosestPlayer(PlayerController* currentController, std::vector<Character*> players, FVector* HeadPos = nullptr, bool mustBeVisible = true, float FOV = 180) {
 		auto localPlayer = ue4::getLocalPlayer();
 		if (!localPlayer->PlayerController) return nullptr;
 		auto PlayerController = localPlayer->PlayerController;
@@ -79,13 +79,14 @@ public:
 		FVector playerRootLocation = {0};
 		for(auto player : players) {
 			if (ue4::IsLocalPlayer(player)) continue;
-			ue4::GetBoneLocation(player->Mesh, &playerRootLocation, UpGunBoneIds::PELVIS);
+			ue4::GetBoneLocation(player->Mesh, &playerRootLocation, UpGunBoneIds::HEAD);
 			auto dist = GetDistance(localPos, playerRootLocation);
-			if (dist < foundPlayerDist && mustBeVisible == false) {
+			auto isInFov = IsInFOV(currentController, playerRootLocation, FOV);
+			if (dist < foundPlayerDist && mustBeVisible == false && isInFov) {
 				foundPlayer = player;
 				foundPlayerDist = dist;
 			}
-			else if (dist < foundPlayerDist && mustBeVisible == true && ue4::LineOfSightTo(PlayerController, player)) {
+			else if (dist < foundPlayerDist && mustBeVisible == true && ue4::IsVisible(PlayerController, player) && isInFov) {
 				foundPlayer = player;
 				foundPlayerDist = dist;
 			}
@@ -119,38 +120,11 @@ public:
 		return player->Mesh->LastRenderTimeOnScreen + fVisionTick >= player->Mesh->LastSumbit && params.ReturnValue;
 	}
 
-	static void AimAt(PlayerController* Controller, FVector Location) {
-	//	FVector localPos = Controller->PlayerCameraManager->TransformComponent->Location;
-		//FVector relativePos = Subtract(Pos, localPos);
-		//float tmp = atan2(relativePos.Y, relativePos.X) * 180 / M_PI;
-		//float pitch = -((acos(relativePos.Z / GetDistance(localPos, Pos)) * 180 / M_PI) - 90);
-		
+	static void AimAt(PlayerController* Controller, FVector2D HeadW2SLocation) {
+		float headX = HeadW2SLocation.X - Globals::width / 2;
+		float headY = HeadW2SLocation.Y - Globals::height / 2;
 
-		//auto fn = ue4::StaticFindObject<UFunction>(L"Engine.Controller:SetControlRotation");
-		//struct {
-		//	FRotator NewRotation;
-		//}params;
-
-		//FVector NewRotationVector = { 0 };
-		//ue4::GetBoneLocation(Character->Mesh, &NewRotationVector, UpGunBoneIds::HEAD);
-		//FVector HeadScreen = { 0 };
-		//if (Native::ProjectWorldToScreen(Controller, &NewRotationVector, &HeadScreen, false)) {
-		//	auto CamLoc = Controller->Character->RootComponent->Location;
-		//	auto VectorPos = Subtract(HeadScreen, CamLoc);
-
-		//	auto dist = sqrt(VectorPos.X * VectorPos.X + VectorPos.Y * VectorPos.Y + VectorPos.Z * VectorPos.Z);
-
-		//	NewRotationVector.X = -((acosf(VectorPos.Z / dist) * (float)(180.0f / M_PI)) - 90.f);
-		//	NewRotationVector.Y = atan2f(VectorPos.Y, VectorPos.X) * (float)(180.0f / M_PI);
-		////	return NewRotationVector;
-		//	params.NewRotation = { NewRotationVector.X, NewRotationVector.Y, NewRotationVector.Z };
-		//	Native::oProcessEvent(Controller, fn, &params);
-		//}
-
-		//Native::oProcessEvent(Controller, fn, &params);
-
-	//	printf("tmp : %f\n", tmp);
-	//	printf("pitch : %f\n", pitch);
+		mouse_event(MOUSEEVENTF_MOVE, headX * (static_cast<float>(Globals::AimbotSpeedX)/10), headY * (static_cast<float>(Globals::AimbotSpeedY) / 10), NULL, NULL);
 	}
 
 	static bool LineOfSightTo(PlayerController* Controller, Character* player) {
@@ -172,7 +146,7 @@ public:
 		return params.ReturnValue;
 	}
 
-	static bool IsInFOV(Character* m_Player, FVector position, float fov)
+	static bool IsInFOV(PlayerController* m_Player, FVector position, float fov)
 	{
 		FVector2D centerScreen{ (float)Globals::width / 2, (float)Globals::height / 2 };
 		FVector2D screenPos;

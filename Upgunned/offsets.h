@@ -78,13 +78,13 @@ public :
 					<< termcolor::reset
 					<< std::endl;
 #endif
-				DetourAttachE(Native::oPostRender, hooks::hkPostRender)
+/*				DetourAttachE(Native::oPostRender, hooks::hkPostRender)
 #ifndef DEBUGLOG
 					std::cout << termcolor::bright_green
 					<< "Hooked PostRender successfully"
 					<< termcolor::reset
 					<< std::endl;
-#endif
+#endif*/
 #ifdef AESHOOK
 
 				DetourAttachE(Native::DecryptData, hooks::hkDecryptData)
