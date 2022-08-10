@@ -20,6 +20,7 @@ An open-source cheat for [UpGun](https://store.steampowered.com/app/1575870/UpGu
 
 - [ ] - Config
 - [ ] - Aim Prediction 
+- [ ] - Teams
 ## License
 
 [Apache Licence 2.0](https://www.apache.org/licenses/LICENSE-2.0)
