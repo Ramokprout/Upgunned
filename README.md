@@ -8,7 +8,7 @@ An open-source cheat for [UpGun](https://store.steampowered.com/app/1575870/UpGu
 
 ## Disclaimer
 
-- This project has been made only for leaning purposes.
+- This project has been made only for learning purposes.
 - This project is not designed to be used ingame.
 ## Features
 
