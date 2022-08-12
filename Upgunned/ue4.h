@@ -25,6 +25,10 @@ private :
 	}
 public:
 
+	static bool GameStarted() {
+		return UpgunnedEngine::GetWorld()->GameState->GameMode != nullptr;
+	}
+
 	static FVector2D V2Subtract(FVector2D point1, FVector2D point2)
 	{
 		FVector2D vector{ 0, 0 };
@@ -66,7 +70,7 @@ public:
 		return distance;
 	}
 
-	static Character* GetClosestPlayer(PlayerController* currentController, std::vector<Character*> players, FVector* HeadPos = nullptr, bool mustBeVisible = true, float FOV = 180) {
+	static Character* GetClosestPlayer(PlayerController* currentController, std::vector<Character*> players, FVector* HeadPos = nullptr, bool mustBeVisible = true, float FOV = 180, bool ignoreMates = true) {
 		auto localPlayer = ue4::getLocalPlayer();
 		if (!localPlayer->PlayerController) return nullptr;
 		auto PlayerController = localPlayer->PlayerController;
@@ -79,6 +83,7 @@ public:
 		FVector playerRootLocation = {0};
 		for(auto player : players) {
 			if (ue4::IsLocalPlayer(player)) continue;
+			if (ignoreMates && ue4::IsTeamMate(currentController->Character->PlayerState, player->PlayerState)) continue;
 			ue4::GetBoneLocation(player->Mesh, &playerRootLocation, UpGunBoneIds::HEAD);
 			auto dist = GetDistance(localPos, playerRootLocation);
 			auto isInFov = IsInFOV(currentController, playerRootLocation, FOV);
@@ -166,6 +171,12 @@ public:
 		//* (static_cast<float>(Globals::AimbotSpeedX)/10)
 		//* (static_cast<float>(Globals::AimbotSpeedY) / 10)
 		mouse_event(MOUSEEVENTF_MOVE, TargetX, TargetY, NULL, NULL);
+	}
+
+	static bool IsTeamMate(PlayerState* player1, PlayerState* player2) {
+
+		if (!ue4::IsPlayingMME()) return false;
+		return player1->Team.ID == player2->Team.ID;
 	}
 
 	static bool LineOfSightTo(PlayerController* Controller, Character* player) {
@@ -266,7 +277,22 @@ public:
 		return params.ReturnValue;
 	}
 
+	static bool IsPlayingMME() {
+		if (!ue4::GameStarted()) return false;
+		auto GameModeName = UpgunnedEngine::GetGameModeName();
+		return GameModeName.contains(L"Deathmatch") && (!GameModeName.contains(L"FFA"));
+	}
 
+	static bool IsPlayingFFA() {
+		if (!ue4::GameStarted()) return false;
+		return UpgunnedEngine::GetGameModeName().contains(L"FFA");
+	}
+
+	static bool IsInLobby() {
+		return false; //GetGameModeName will not work because GetGameModeName exploits upgun's GameModeselector
+		auto GameModeName = UpgunnedEngine::GetGameModeName();
+		return GameModeName.contains(L"MainMenu") || GameModeName.contains(L"Lobby_GameMode");
+	}
 
 	static LocalPlayer* getLocalPlayer() {
 		auto pLocalPlayer = (void*)ReadPointer(UpgunnedEngine::GetWorld()->OwningGameInstance->LocalPlayers, 0x0);

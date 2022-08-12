@@ -8,7 +8,17 @@
 #include "ue4.h"
 #include "Globals.h"
 //#define LOGGER
-namespace hooks {
+namespace hooks 
+{
+#ifdef RELOADHOOK
+	static void hkReload(AUpGunWeapon* weapon) {
+		//printf("Ammo : %d\n", weapon->Ammo);
+		//printf("Magazine : %d\n", weapon->Magazine);
+		//printf("OnWeaponAmmoChanged : %p\n", weapon->OnWeaponAmmoChanged);
+		Native::Reload(weapon);
+		//weapon->Magazine = 231;
+	}
+#endif
 	static void hkProcessEvent(UObject* dis, UFunction* fn, void* params) {
 #ifdef LOGGER
 		std::string nameOfFunction = ue4::FNameToString(&fn->Name);
@@ -47,7 +57,7 @@ namespace hooks {
 		}*/
 
 		auto name = dis->GetName();
-		if (std::wstring(name).contains(L"BP_Weapon_RifleProjectile_C") && nameOfFunction.contains("BndEvt__BP_Weapon_RifleProjectile_CollisionSphere_K2Node_ComponentBoundEvent_0")) {
+		if (std::wstring(name).contains(L"Rifle")) {
 			noLog = false;
 		}
 		else {
@@ -57,7 +67,7 @@ namespace hooks {
 
 
 		if (!noLog) {
-				struct paramsStruct {
+/*				struct paramsStruct {
 					void* HitComponent;
 					void* OtherActor;
 					void* OtherComp;
@@ -73,7 +83,8 @@ namespace hooks {
 				};
 
 				auto structuredParams = (paramsStruct*)params;
-				structuredParams->OtherActor = ue4::getLocalPlayer()->PlayerController->Character; //bullet teleport lol
+				structuredParams->OtherActor = ue4::getLocalPlayer()->PlayerController->Character; //bullet teleport lol*/
+			printf("Function name : %s\n", nameOfFunction.c_str());
 		}
 		Native::FMemoryFree(name);
 #endif

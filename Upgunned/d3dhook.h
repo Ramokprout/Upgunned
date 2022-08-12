@@ -5,106 +5,9 @@
 #include "ue4.h"
 #include "upgunstructs.h"
 #include "Native.h"
-//#define _DEBUG
+#include "guihelpers.h"
+#include "guisections.h"
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-std::pair<const char*, UpGunBoneIds> BoneArray[5] = {
-        std::make_pair("HEAD", UpGunBoneIds::HEAD),
-        std::make_pair("NECK", UpGunBoneIds::NECK),
-        std::make_pair("PENIS", UpGunBoneIds::PELVIS),
-        std::make_pair("FOOT", UpGunBoneIds::ROOT),
-        std::make_pair("CHEST", UpGunBoneIds::CHEST)
-};
-
-std::pair<const char*, AimbotKey> AimbotKeys[7] = {
-        std::make_pair("MOUSE_L", AimbotKey::MOUSE_L),
-        std::make_pair("MOUSE_MIDDLE", AimbotKey::MOUSE_MIDDLE),
-        std::make_pair("MOUSE_R", AimbotKey::MOUSE_R),
-        std::make_pair("CONTROL", AimbotKey::CONTROL),
-        std::make_pair("ALT", AimbotKey::ALT),
-        std::make_pair("SHIFT", AimbotKey::SHIFT),
-        std::make_pair("TAB", AimbotKey::TAB),
-};
-
-
-std::pair<const char*, AimbotKey> getCurrentAimbotKey() {
-    size_t n = sizeof(AimbotKeys) / sizeof(AimbotKeys[0]);
-    for (int i = 0; i < n; i++) {
-        auto aimkey = AimbotKeys[i];
-        if (Globals::Aimbot_Key == aimkey.second) {
-            return aimkey;
-        }
-    }
-
-    return std::make_pair("MOUSE_R", AimbotKey::MOUSE_R);
-}
-
-std::pair<const char*, UpGunBoneIds> getCurrentAimbotLocation() {
-    size_t n = sizeof(BoneArray) / sizeof(BoneArray[0]);
-    for (int i = 0; i < n; i++) {
-        auto bonePair = BoneArray[i];
-        if (Globals::Aimbot_Pos == bonePair.second) {
-            return bonePair;
-        }
-    }
-
-    return  std::make_pair("HEAD", UpGunBoneIds::HEAD);
-}
-
-#define INITSTYLE \
-auto& Style = ImGui::GetStyle();\
-Style.WindowPadding = ImVec2(9.000f, 15.000f);\
-Style.WindowTitleAlign = ImVec2(0.510f, 0.540f);\
-Style.FramePadding = ImVec2(5.000f, 4.000f);\
-Style.ItemInnerSpacing = ImVec2(6.000f, 3.000f);\
-Style.ScrollbarSize = 15.000f;\
-Style.GrabMinSize = 11.000f;\
-Style.ButtonTextAlign = ImVec2(0.490f, 0.500f);\
-Style.Colors[ImGuiCol_Text] = ImVec4(0.920f, 0.920f, 0.920f, 1.000f);\
-Style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.440f, 0.440f, 0.440f, 1.000f);\
-Style.Colors[ImGuiCol_WindowBg] = ImVec4(0.012f, 0.012f, 0.012f, 1.000f);\
-Style.Colors[ImGuiCol_PopupBg] = ImVec4(0.080f, 0.080f, 0.080f, 0.940f);\
-Style.Colors[ImGuiCol_Border] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_FrameBg] = ImVec4(0.110f, 0.110f, 0.110f, 1.000f);\
-Style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.780f, 0.550f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_TitleBg] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.000f, 0.000f, 0.000f, 0.510f);\
-Style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.110f, 0.110f, 0.110f, 1.000f);\
-Style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.060f, 0.060f, 0.060f, 0.530f);\
-Style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.210f, 0.210f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.470f, 0.470f, 0.470f, 1.000f);\
-Style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.810f, 0.830f, 0.810f, 1.000f);\
-Style.Colors[ImGuiCol_CheckMark] = ImVec4(1.000f, 0.590f, 0.000f, 1.000f);\
-Style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_Button] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.780f, 0.550f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_Header] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.930f, 0.650f, 0.140f, 1.000f);\
-Style.Colors[ImGuiCol_Separator] = ImVec4(0.210f, 0.210f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_SeparatorActive] = ImVec4(0.780f, 0.550f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.210f, 0.210f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.780f, 0.550f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_Tab] = ImVec4(0.510f, 0.360f, 0.150f, 1.000f);\
-Style.Colors[ImGuiCol_TabHovered] = ImVec4(0.910f, 0.640f, 0.130f, 1.000f);\
-Style.Colors[ImGuiCol_TabActive] = ImVec4(0.780f, 0.550f, 0.210f, 1.000f);\
-Style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.070f, 0.100f, 0.150f, 0.970f);\
-Style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.140f, 0.260f, 0.420f, 1.000f);\
-Style.Colors[ImGuiCol_PlotLines] = ImVec4(0.610f, 0.610f, 0.610f, 1.000f);\
-Style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.000f, 0.600f, 0.000f, 1.000f);\
-Style.Colors[ImGuiCol_DragDropTarget] = ImVec4(1.000f, 1.000f, 0.000f, 0.900f);\
-Style.Colors[ImGuiCol_NavHighlight] = ImVec4(0.260f, 0.590f, 0.980f, 1.000f);\
-Style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.000f, 1.000f, 1.000f, 0.700f);\
-Style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.800f, 0.800f, 0.800f, 0.200f);\
-Style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.800f, 0.800f, 0.800f, 0.350f);\
-Globals::font = io.Fonts->AddFontFromFileTTF("C:/Users/ramok/Downloads/Fonts/arial.ttf", 15.990f);\
-
 
 namespace d3dhook {
 
@@ -156,30 +59,6 @@ namespace d3dhook {
         vp.TopLeftY = 0;
         Globals::pContext->RSSetViewports(1, &vp);
         return hr;
-    }
-
-    void resetEveryValues() {
-        Globals::WalkSpeedMultiplier->enabled = false;
-        Globals::WalkSpeedMultiplier->Multiplier = 1;
-        Globals::WalkSpeedMultiplier->OriginalValue = 0.f;
-        Globals::HealthMultiplier->enabled = false;
-        Globals::HealthMultiplier->Multiplier = 1;
-        Globals::HealthMultiplier->OriginalValue = 0.f;
-        Globals::noSpread->enabled = false;
-        Globals::noSpread->enabledCheckbox = false;
-        Globals::noSpread->Multiplier = 1;
-        Globals::noSpread->OriginalValue = 0.f;
-        Globals::RifleFireRateMultiplier->enabled = false;
-        Globals::RifleFireRateMultiplier->Multiplier = 1;
-        Globals::RifleFireRateMultiplier->OriginalValue = 0.f;
-        Globals::BulletSpeedMultiplier->enabled = false;
-        Globals::BulletSpeedMultiplier->Multiplier = 1;
-        Globals::BulletSpeedMultiplier->OriginalValue = 0.f;
-        Globals::RifleMagazine = 20.0f;
-        Globals::RifleCriticalHitChanceMultiplier->enabled = false;
-        Globals::RifleCriticalHitChanceMultiplier->Multiplier = 1;
-        Globals::RifleCriticalHitChanceMultiplier->OriginalValue = 0.f;
-        Globals::GWorldTrigger = UpgunnedEngine::GetWorld();
     }
 
 
@@ -256,7 +135,7 @@ namespace d3dhook {
                 GetWindowThreadProcessId(hwnd, &Pid);
                 if (Globals::showMenu == false && GetAsyncKeyState(Globals::Aimbot_Key) && Pid == Globals::ProcessPid) {
                     FVector BonePos = { 0 };
-                    auto closestVisiblePlayer = ue4::GetClosestPlayer(PlayerController, players, nullptr, true, Globals::AimbotFOV);
+                    auto closestVisiblePlayer = ue4::GetClosestPlayer(PlayerController, players, nullptr, true, Globals::AimbotFOV, Globals::ignoreMates);
                     if (closestVisiblePlayer) {
                         FVector2D BonePosW2S = { 0 };
                         ue4::GetBoneLocation(closestVisiblePlayer->Mesh, &BonePos, Globals::Aimbot_Pos);
@@ -275,6 +154,7 @@ namespace d3dhook {
         
           for (auto player : players) {
                 if (ue4::IsLocalPlayer(player)) continue;
+           //     if (Globals::ignoreMates && ) continue; bad idea, i'll make a TeamMate ESP instead
                 auto distance = ue4::getDistance(PlayerController->Character, player) / 15;
                 FVector Root = { 0 };
                 ue4::GetBoneLocation(player->Mesh, &Root, UpGunBoneIds::ROOT);
@@ -324,6 +204,11 @@ namespace d3dhook {
                             if (Globals::boxesESPVischeck && ue4::IsVisible(PlayerController, player)) {
                                 color = { Globals::ESPVisibleColor[0], Globals::ESPVisibleColor[1], Globals::ESPVisibleColor[2] };
                             }
+
+                            if (Globals::boxesESPMates && ue4::IsTeamMate(localPlayer->PlayerController->Character->PlayerState, player->PlayerState)) {
+                                color = { Globals::ESPTeamMateColor[0], Globals::ESPTeamMateColor[1], Globals::ESPTeamMateColor[2] };
+                            }
+
                             pDrawList->AddRect(bottomLeft, topRight, color);
                         }
                     }
@@ -361,316 +246,41 @@ namespace d3dhook {
 
             bool isServer = ue4::IsServer();
             auto localPlayer = ue4::getLocalPlayer();
+            auto character = localPlayer->PlayerController->Character;
+            static float tempRepairForCustomTimeDilatation = 0;
 
-            if (isServer) {
-                if (ImGui::Button("Host", ImVec2(125.000f, 30.000f)))
-                {
-                    Globals::tab = 0;
-                }
-                ImGui::SameLine();
-            }
-            else if (Globals::tab == 0) {
-                Globals::tab++;
-            }
+            TabSelector::Render(isServer);
+
+            /*
+            tabs:
+            0 = Host 
+            1 = Debug
+            2 = Visuals
+            3 = Misc
+            4 = Aimbot
+            */
+
+            switch (Globals::tab) {
+            case GUIHelpers::GuiTabs::GuiTabs_Host:
+                Host::Render(character);
+                break;
+            case GUIHelpers::GuiTabs::GuiTabs_Debug:
 #ifdef _DEBUG
-            if (ImGui::Button("Debug", ImVec2(125.000f, 30.000f)))
-            {
-                Globals::tab = 1;
-       
-            }         
-            ImGui::SameLine();
-#endif
-            if (ImGui::Button("Visuals", ImVec2(125.000f, 30.000f)))
-            {
-                Globals::tab = 2;
-            }   
-            ImGui::SameLine();
-
-            if (ImGui::Button("Aimbot", ImVec2(125, 30))) {
-                Globals::tab = 4;
-            }
-            ImGui::SameLine();
-
-            if (ImGui::Button("Misc", ImVec2(125.000f, 30.000f)))
-            {
-                Globals::tab = 3;
-            }
-            auto world = UpgunnedEngine::GetWorld();
-            if (Globals::tab == 0) {
-
-                auto PlayerController = localPlayer->PlayerController;
-                auto character = PlayerController->Character;
-                ImGui::SetNextItemWidth(200.000f);
-                ImVec2 size = {0, 0};
-                size = ImGui::CalcTextSize("Pawn CustomTimeDilatation");
-                ImGui::SliderFloat("Pawn CustomTimeDilatation", &character->CustomTimeDilatation, 0.f, 15.f);
-                ImGui::SameLine();
-                ImGui::SetCursorPos({ size.x + 225, ImGui::GetCursorPosY()});
-                if (ImGui::Button("Reset##first")) {
-                    character->CustomTimeDilatation = 1;
-                }
-                size = ImGui::CalcTextSize("World CustomTimeDilatation");
-                ImGui::SetNextItemWidth(200.000f);
-                float caca = 0;
-                //world->PersistentLevel->WorldSettings->TimeDilatation
-                ImGui::SliderFloat("World CustomTimeDilatation", &caca, 0.f, 15.f);
-                ImGui::SameLine();
-                ImGui::SetCursorPos({ size.x + 223, ImGui::GetCursorPosY() });
-                if (ImGui::Button("Reset##second")) {
-                    world->PersistentLevel->WorldSettings->TimeDilatation = 1;
-                }
-
-                if (Globals::GWorldTrigger != world) {
-                    d3dhook::resetEveryValues();
-                }
-
-                if (ImGui::CollapsingHeader("Weapon"))
-                {
-                    auto weaponAttributeSet = localPlayer->PlayerController->Character->PlayerState->WeaponAttributeSet;
-                    if (ImGui::Checkbox("No Spread", &Globals::noSpread->enabledCheckbox)) {
-                        if (Globals::noSpread->enabledCheckbox) {
-                            if (!Globals::noSpread->enabled) {
-                                Globals::noSpread->OriginalValue = weaponAttributeSet->RifleDispersion.CurrentValue;
-                                Globals::noSpread->Multiplier = 0.001f;
-                                Globals::noSpread->enabled = true;
-                            }
-                            weaponAttributeSet->RifleDispersion.CurrentValue = weaponAttributeSet->RifleDispersion.CurrentValue * Globals::noSpread->Multiplier;
-                        }
-                        else {
-                            Globals::noSpread->enabled = false;
-                            Globals::noSpread->OriginalValue = 0;
-                            Globals::noSpread->Multiplier = 1;
-                        }
-
-                    }
-
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderFloat("Rifle Fire Rate Multiplier", &Globals::RifleFireRateMultiplier->Multiplier, 0.01f, 50.f)) {
-                        if (!Globals::RifleFireRateMultiplier->enabled) {
-                            Globals::RifleFireRateMultiplier->OriginalValue = weaponAttributeSet->RifleFireRate.CurrentValue;
-                            Globals::RifleFireRateMultiplier->enabled = true;
-                        }
-
-                        weaponAttributeSet->RifleFireRate.CurrentValue = Globals::RifleFireRateMultiplier->OriginalValue * Globals::RifleFireRateMultiplier->Multiplier;
-                    }
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderFloat("Bullet Speed Multiplier", &Globals::BulletSpeedMultiplier->Multiplier, 0.01f, 25.f)) {
-                        if (!Globals::BulletSpeedMultiplier->enabled) {
-                            Globals::BulletSpeedMultiplier->OriginalValue = weaponAttributeSet->RifleBulletSpeed.CurrentValue;
-                            Globals::BulletSpeedMultiplier->enabled = true;
-                        }
-
-                        weaponAttributeSet->RifleBulletSpeed.CurrentValue = Globals::BulletSpeedMultiplier->OriginalValue * Globals::BulletSpeedMultiplier->Multiplier;
-                    }
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderInt("Rifle Magazine", &Globals::RifleMagazine, 5, 100))
-                    {
-                        weaponAttributeSet->RifleMagazine.CurrentValue = (float)Globals::RifleMagazine;
-                    }
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderFloat("Bullet Critical Hit Chance Multiplier", &Globals::RifleCriticalHitChanceMultiplier->Multiplier, 0.01f, 150.f)) {
-                        if (!Globals::RifleCriticalHitChanceMultiplier->enabled) {
-                            Globals::RifleCriticalHitChanceMultiplier->OriginalValue = weaponAttributeSet->RifleCriticalHitChance.CurrentValue;
-                            Globals::RifleCriticalHitChanceMultiplier->enabled = true;
-                        }
-                        weaponAttributeSet->RifleCriticalHitChance.CurrentValue = Globals::RifleCriticalHitChanceMultiplier->OriginalValue * Globals::RifleCriticalHitChanceMultiplier->Multiplier;
-                    }
-                    ImGui::SetNextItemWidth(150.000f);
-                    ImGui::SliderFloat("Bullet Damage Multiplier", &weaponAttributeSet->DamageBaseMultiplier.CurrentValue, 0.01f, 150.f);
-                    if (ImGui::Button("Reset Values##WeaponResetValues")) {
-
-                        weaponAttributeSet->DamageBaseMultiplier.CurrentValue = weaponAttributeSet->DamageBaseMultiplier.BaseValue;
-                        weaponAttributeSet->RifleMagazine.CurrentValue = weaponAttributeSet->RifleMagazine.BaseValue;
-                        weaponAttributeSet->RifleCriticalHitChance.CurrentValue = Globals::RifleCriticalHitChanceMultiplier->OriginalValue;
-                        weaponAttributeSet->RifleBulletSpeed.CurrentValue = Globals::BulletSpeedMultiplier->OriginalValue;
-                        weaponAttributeSet->RifleFireRate.CurrentValue = Globals::RifleFireRateMultiplier->OriginalValue;
-                        weaponAttributeSet->RifleDispersion.CurrentValue = Globals::noSpread->OriginalValue;
-
-                        Globals::noSpread->enabled = false;
-                        Globals::noSpread->enabledCheckbox = false;
-                        Globals::noSpread->Multiplier = 1;
-                        Globals::noSpread->OriginalValue = 0.f;
-                        Globals::RifleFireRateMultiplier->enabled = false;
-                        Globals::RifleFireRateMultiplier->Multiplier = 1;
-                        Globals::RifleFireRateMultiplier->OriginalValue = 0.f;
-                        Globals::BulletSpeedMultiplier->enabled = false;
-                        Globals::BulletSpeedMultiplier->Multiplier = 1;
-                        Globals::BulletSpeedMultiplier->OriginalValue = 0.f;
-                        Globals::RifleMagazine = 20.0f;
-                        Globals::RifleCriticalHitChanceMultiplier->enabled = false;
-                        Globals::RifleCriticalHitChanceMultiplier->Multiplier = 1;
-                        Globals::RifleCriticalHitChanceMultiplier->OriginalValue = 0.f;
-
-
-                    }
-                }
-
-                if (ImGui::CollapsingHeader("Player")) {
-                    auto LocalPlayer = ue4::getLocalPlayer();
-                    auto BaseCharacterAttributeSet = LocalPlayer->PlayerController->Character->PlayerState->BaseCharacterAttributeSet;
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderFloat("Health Multiplier", &Globals::HealthMultiplier->Multiplier, 0.5f, 15.f)) {
-                        if (!Globals::HealthMultiplier->enabled) {
-                            Globals::HealthMultiplier->OriginalValue = BaseCharacterAttributeSet->MaxHealth.CurrentValue;
-                            Globals::HealthMultiplier->enabled = true;
-                        }
-
-                        BaseCharacterAttributeSet->Health.CurrentValue = BaseCharacterAttributeSet->MaxHealth.CurrentValue * Globals::HealthMultiplier->Multiplier;
-                    }
-                    ImGui::SetNextItemWidth(150.000f);
-                    if (ImGui::SliderFloat("WalkSpeed Multiplier", &Globals::WalkSpeedMultiplier->Multiplier, 0.5f, 4.f)) {
-                        if (!Globals::WalkSpeedMultiplier->enabled) {
-                            Globals::WalkSpeedMultiplier->OriginalValue = BaseCharacterAttributeSet->WalkSpeed.CurrentValue;
-                            Globals::WalkSpeedMultiplier->enabled = true;
-                        }
-
-                        BaseCharacterAttributeSet->WalkSpeed.CurrentValue = BaseCharacterAttributeSet->WalkSpeed.CurrentValue * Globals::WalkSpeedMultiplier->Multiplier;
-                    }
-
-                    if (ImGui::Button("Reset Values##PlayerResetValues")) {
-
-                        BaseCharacterAttributeSet->WalkSpeed.CurrentValue = Globals::WalkSpeedMultiplier->OriginalValue;
-                        BaseCharacterAttributeSet->Health.CurrentValue = Globals::HealthMultiplier->OriginalValue;
-                        Globals::WalkSpeedMultiplier->enabled = false;
-                        Globals::WalkSpeedMultiplier->Multiplier = 1;
-                        Globals::WalkSpeedMultiplier->OriginalValue = 0.f;
-                        Globals::HealthMultiplier->enabled = false;
-                        Globals::HealthMultiplier->Multiplier = 1;
-                        Globals::HealthMultiplier->OriginalValue = 0.f;
-                    }
-
-                }
-
-
-            }
-            else if (Globals::tab == 1) {
-#ifdef _DEBUG
-                if (ImGui::Button("Print Addresses")) {
-                    auto LocalPlayer = ue4::getLocalPlayer();
-                    PRINT_PTR(LocalPlayer, "LocalPlayer");
-                    if (LocalPlayer->PlayerController) {
-                        PRINT_PTR(LocalPlayer->PlayerController, "PlayerController");
-                    }
-    
-                }
-
-
-                if (ImGui::Button("Dump Actors")) {
-                    auto actors = UpgunnedEngine::GetWorld()->PersistentLevel->AActors;
-                    std::wofstream stream("actorsdump.txt");
-
-                    for (int i = 0; i < actors.Num(); i++) {
-                        auto actor = actors[i];
-                        if (actor == nullptr || !actor) continue;
-                        auto UobjectActor = (UObject*)actor;
-                        if (IsBadReadPtr(&UobjectActor->Name, sizeof(FName))) continue;
-                        FString str = FString();
-                        Native::FNameToString(&UobjectActor->Name, &str);
-                        std::wstring wStr = std::wstring(str.c_str());
-                        Native::FMemoryFree(str.c_str());
-                        stream << L"[" << std::to_wstring(i) << L"] " << wStr << std::endl;
-                        wStr.clear();
-                    }
-
-                    stream.close();
-                }
-
-
-
-          //     ImGui::SliderInt("X modify#1", &Globals::XMODIFDEBUG, -100, 100);
-          //    ImGui::SliderInt("Y modify#1", &Globals::YMODIFDEBUG, -100, 100);
-                ////ImGui::SliderInt("Z modify#1", &Globals::ZMODIFDEBUG, -100, 100);            
-                ////
-                ////ImGui::SliderInt("X modify 2#2", &Globals::XMODIFDEBUG2, -100, 100);
-                ////ImGui::SliderInt("Y modify 2#2", &Globals::YMODIFDEBUG2, -100, 100);
-                ////ImGui::SliderInt("Z modify 2#2", &Globals::ZMODIFDEBUG2, -100, 100);
+                debug::Render();
 
 #else
-            ImGui::Text("This menu is avaliable in debug mode only");
+                ImGui::Text("This menu is avaliable in debug mode only");
 #endif
-            }
-            else if(Globals::tab == 2) {
-                if (ImGui::SliderInt("FOV", &Globals::FOV, 30, 160)) {
-                    auto LocalPlayer = ue4::getLocalPlayer();
-                    auto cam = LocalPlayer->PlayerController->Character->Camera;
-                    cam->FieldOfView = (float)Globals::FOV;
-                }
-
-                ImGui::Checkbox("ESP", &Globals::boxesESP);
-                ImGui::Checkbox("ESP VisCheck", &Globals::boxesESPVischeck);
-#ifdef _DEBUG
-                ImGui::Checkbox("Bones ESP", &Globals::bonesESP);
-#endif
-                ImGui::Checkbox("Snaplines", &Globals::snapLines);
-                ImGui::Checkbox("Snaplines VisCheck", &Globals::snapLinesVischeck);
-                ImGui::Checkbox("Render Aimbot FOV", &Globals::renderFOVCircle);
-                ImGui::Checkbox("Show Watermark", &Globals::showWatermark);
-                ImGui::Checkbox("Show FPS", &Globals::showFPS);
-
-                ImGui::SliderFloat("ESP Max Distance##ESPDIST", &Globals::ESPMaxDistance, 0, 1000);
-                ImGui::SliderFloat("Snaplines Max Distance##SNAPDIST", &Globals::SnaplinesMaxDistance, 0, 1000);
-              
-                ImGui::ColorEdit3("FOV Circle Color", Globals::FOVCircleColor, ImGuiColorEditFlags_NoInputs);
-                ImGui::ColorEdit3("Snaplines Color", Globals::SnaplinesColor, ImGuiColorEditFlags_NoInputs);
-                ImGui::ColorEdit3("Snapline Visible Color", Globals::SnaplinesVisibleColor, ImGuiColorEditFlags_NoInputs);
-                ImGui::ColorEdit3("ESP Color", Globals::ESPColor, ImGuiColorEditFlags_NoInputs);
-                ImGui::ColorEdit3("ESP Visible Color", Globals::ESPVisibleColor, ImGuiColorEditFlags_NoInputs);
-            }
-            else if (Globals::tab == 3) {
-                if (ImGui::Button("Build Console")) {
-                    ue4::BuildConsole();
-                    ue4::BuildCheatManager();
-#ifndef DEBUGLOG
-                    std::cout << termcolor::bright_green
-                        << "Built UConsole and CheatManager successfully"
-                        << termcolor::reset
-                        << std::endl;
-#endif
-                }
-
-
-            }
-            else if (Globals::tab == 4) {
-            auto currentPos = getCurrentAimbotLocation();
-                if (ImGui::BeginCombo("Aimbot Position", currentPos.first)) {
-                    size_t n = sizeof(BoneArray) / sizeof(BoneArray[0]);
-                    for (int i = 0; i < n; i++) {
-                        auto boneName = BoneArray[i];
-                        bool selected = Globals::Aimbot_Pos == boneName.second;
-
-                        if (ImGui::Selectable(boneName.first, selected)) {
-                            Globals::Aimbot_Pos = boneName.second;
-                        }
-
-                        if (selected) {
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }   
-                
-                auto currentKey = getCurrentAimbotKey();
-                if (ImGui::BeginCombo("Aimbot Key", currentKey.first)) {
-                    size_t n = sizeof(AimbotKeys) / sizeof(AimbotKeys[0]);
-                    for (int i = 0; i < n; i++) {
-                        auto aimbotKey = AimbotKeys[i];
-                        bool selected = Globals::Aimbot_Key == aimbotKey.second;
-
-                        if (ImGui::Selectable(aimbotKey.first, selected)) {
-                            Globals::Aimbot_Key = aimbotKey.second;
-                        }
-
-                        if (selected) {
-                            ImGui::SetItemDefaultFocus();
-                        }
-                    }
-                    ImGui::EndCombo();
-                }
-
-                ImGui::Checkbox("Enable Aimbot", &Globals::AimbotEnabled);
-                ImGui::SliderFloat("Aimbot FOV##AIMFOV", &Globals::AimbotFOV, 10, 700);
-                ImGui::SliderInt("Aimbot Smooth X##AIMSMOOTHX", &Globals::AimbotSpeedX, 1, 15);
-                ImGui::SliderInt("Aimbot Smooth Y##AIMSMOOTHY", &Globals::AimbotSpeedY, 1, 15);
+                break;
+            case GUIHelpers::GuiTabs::GuiTabs_Visuals:
+                visualMenu::Render();
+                break;
+            case GUIHelpers::GuiTabs::GuiTabs_Misc:
+                miscMenu::Render();
+                break;
+            case GUIHelpers::GuiTabs::GuiTabs_Aimbot:
+                aimbotMenu::Render();
+                break;
             }
 
             ImGui::PopStyleVar(1);

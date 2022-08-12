@@ -25,6 +25,27 @@
     <Filter Include="Header Files\libs">
       <UniqueIdentifier>{1ef70153-6847-4172-8d24-fd6e6a0e1aa9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\sections">
+      <UniqueIdentifier>{ce6e098d-de34-4883-9644-4cb91266f7db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\debug">
+      <UniqueIdentifier>{179eb1d4-e3bb-4cd2-9c38-9f8dafc112eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\visuals">
+      <UniqueIdentifier>{2a86a5d7-f7ad-4fde-83bc-c8e444be6a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\aimbot">
+      <UniqueIdentifier>{0a594e32-a6e4-4c0f-b7f6-fa865fcde7a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\host">
+      <UniqueIdentifier>{252de979-3313-4e2a-aa3a-b5fadd662e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\host\WeaponCollapsingHeader">
+      <UniqueIdentifier>{79b025cf-8cb6-4833-a906-a8e10636c7f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GUI\sections\host\PlayerCollapsingHeader">
+      <UniqueIdentifier>{47f96955-001d-41c8-97d6-85e83618cf2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -68,6 +89,132 @@
     </ClInclude>
     <ClInclude Include="termcolor.hpp">
       <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="guihelpers.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="guicomponents.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="tabSelector.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="PawnCustomTimeDilatation.h">
+      <Filter>Header Files\GUI\sections\host</Filter>
+    </ClInclude>
+    <ClInclude Include="host.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldCustomTimeDilatation.h">
+      <Filter>Header Files\GUI\sections\host</Filter>
+    </ClInclude>
+    <ClInclude Include="guisections.h">
+      <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeader.h">
+      <Filter>Header Files\GUI\sections\host</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderNoSpread.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderRifleFireRateMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderBulletCriticalHitChanceMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderBulletDamageMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderBulletSpeedMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderResetValues.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderRifleMagazine.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCollapsingHeader.h">
+      <Filter>Header Files\GUI\sections\host</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCollapsingHeaderHealthMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\PlayerCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCollapsingHeaderWalkSpeedMultiplier.h">
+      <Filter>Header Files\GUI\sections\host\PlayerCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCollapsingHeaderResetValues.h">
+      <Filter>Header Files\GUI\sections\host\PlayerCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponCollapsingHeaderComponents.h">
+      <Filter>Header Files\GUI\sections\host\WeaponCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCollapsingHeaderComponents.h">
+      <Filter>Header Files\GUI\sections\host\PlayerCollapsingHeader</Filter>
+    </ClInclude>
+    <ClInclude Include="debug.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="printAddresses.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debugmenucomponents.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="dumpActors.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debugTeam.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debugGamemodeName.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debugWorldSettings.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="visualsMenu.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="visualsmenucomponents.h">
+      <Filter>Header Files\GUI\sections\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="visualFOV.h">
+      <Filter>Header Files\GUI\sections\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="visualBooleans.h">
+      <Filter>Header Files\GUI\sections\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="visualDistSettings.h">
+      <Filter>Header Files\GUI\sections\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="visualColorSettings.h">
+      <Filter>Header Files\GUI\sections\visuals</Filter>
+    </ClInclude>
+    <ClInclude Include="miscMenu.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotMenu.h">
+      <Filter>Header Files\GUI\sections</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotmenucomponents.h">
+      <Filter>Header Files\GUI\sections\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotPosSelector.h">
+      <Filter>Header Files\GUI\sections\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotKeySelector.h">
+      <Filter>Header Files\GUI\sections\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotBooleans.h">
+      <Filter>Header Files\GUI\sections\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbotSettings.h">
+      <Filter>Header Files\GUI\sections\aimbot</Filter>
+    </ClInclude>
+    <ClInclude Include="debugIsPlayingMME.h">
+      <Filter>Header Files\GUI\sections\debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,20 @@ public:
 			return (UWorld*)UWProxy->World;*/
 		return GetEngine()->GameViewport->World;
 	}
+
+	static std::wstring GetGameModeName() {
+		auto GameMode = (UObject*)UpgunnedEngine::GetWorld()->GameState->GameMode->GameModeClass;
+		auto GameModeName = GameMode->GetName();
+		return std::wstring(GameModeName);
+	}
+
+	static std::wstring GetGameStateName() {
+		auto GameMode = (UObject*)UpgunnedEngine::GetWorld()->GameState;
+		auto GameModeName = GameMode->GetName();
+		return std::wstring(GameModeName);
+	}
+
+	
 };
 
 #endif

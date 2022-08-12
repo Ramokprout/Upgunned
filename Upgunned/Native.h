@@ -55,6 +55,8 @@ struct FLinearColor
 	float A; //0x000C
 }; //Size: 0x0010
 
+
+
 class FString;
 
 namespace Native {
@@ -74,6 +76,10 @@ namespace Native {
 	inline bool(__fastcall* LineOfSightTo)(void*, void*, void*);
 	inline void(__fastcall* DecryptData)(void*, void*, void*);
 	inline void(__fastcall* FMemoryFree)(void*);
+	inline void*(__fastcall* FTEXTTOSTRING)(void*);
+#ifdef RELOADHOOK
+	inline void(__fastcall* Reload)(void*);
+#endif
 
 	inline Present oPresent;
 	inline HRESULT(*oResize)(IDXGISwapChain* swapChain, UINT bufferCount, UINT width, UINT height, DXGI_FORMAT newFormat, UINT swapChainFlags) = nullptr;

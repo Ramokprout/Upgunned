@@ -19,7 +19,36 @@ enum AimbotKey {
 
 
 class UObject;
+
+
 class Character;
+
+
+class UpGunTeam
+{
+public:
+	void* ID; //0x0000
+	FString Name; //0x0008
+	//char pad_0010[4]; //0x18
+	//uint32_t Flags; //0x001C
+	//void* Players; //0x0020
+	//char pad_0028[8]; //0x0028
+	//float Score; //0x0030
+	//char pad_0034[258]; //0x0034
+}; //Size: 0x0136
+
+class AUpGunWeapon
+{
+public:
+	char pad_0000[576]; //0x0000
+	uint8_t Magazine; //0x0240
+	uint8_t Ammo; //0x0241
+	char pad_0242[86]; //0x0242
+	void* OnWeaponAmmoChanged; //0x0298
+	char pad_02A0[8]; //0x02A0
+	void* OnWeaponMagazineChanged; //0x02A8
+	char pad_02B0[156]; //0x02B0
+}; //Size: 0x034C
 
 enum UpGunBoneIds {
 	Foot_LEFT = 57,
@@ -42,18 +71,6 @@ enum UpGunBoneIds {
 struct UpGunOSSItemId
 {
 	FString Id;
-};
-
-struct UpGunCosmeticSettings {
-
-	UpGunOSSItemId ScreenItemId;
-
-	FLinearColor FaceTint;
-
-	UpGunOSSItemId ArmorItemId;
-	UpGunOSSItemId HatItemId;
-	UpGunOSSItemId RifleItemId;
-	UpGunOSSItemId KnifeItemId;
 };
 
 class WorldSettings
@@ -134,13 +151,15 @@ public:
 class PlayerController
 {
 public:
-	char pad_0000[672]; //0x0000
+	char pad_0000[648]; //0x0000
+	FVector ControlRotation; //0x0288
+	char pad_0294[12]; //0x0294
 	class Character* Character; //0x02A0
 	char pad_02A8[16]; //0x02A8
 	class PlayerCameraManager* PlayerCameraManager; //0x02B8
 	char pad_02C0[120]; //0x02C0
 	void* CheatManager; //0x0338
-	char pad_0340[232]; //0x0340
+	char pad_0340[1296]; //0x0340
 }; //Size: 0x0428
 
 
@@ -193,7 +212,11 @@ public:
 	class CameraComponent* Camera; //0x04D0
 	char pad_04D8[24]; //0x04D8
 	class CosmeticManager* CosmeticManager; //0x04F0
-	char pad_04F8[927]; //0x04F8
+	char pad_04F8[20]; //0x04F8
+	bool bIsDead; //0x050C
+	char pad_050D[11]; //0x050D
+	class UpGunTeam Team; //0x0518
+	char pad_064E[4992]; //0x064E
 }; //Size: 0x0897
 
 class PlayerCameraManager
@@ -260,27 +283,56 @@ public:
 	char pad_0000[8]; //0x0000
 }; //Size: 0x0008
 
+class UpGunCosmeticSettings
+{
+public:
+	void* ScreenItemId; //0x0000
+	char pad_0008[8]; //0x0008
+	void* FaceTint; //0x0010
+	char pad_0018[8]; //0x0018
+	void* ArmorItemId; //0x0020
+	char pad_0028[8]; //0x0028
+	void* HatItemId; //0x0030
+	char pad_0038[8]; //0x0038
+	void* RifleItemId; //0x0040
+	char pad_0048[8]; //0x0048
+	void* KnifeItemId; //0x0050
+	char pad_0058[232]; //0x0058
+}; //Size: 0x0140
+
+class UpGunTeamId
+{
+public:
+	uint8_t ID; //0x0000
+	char pad_0001[1]; //0x0001
+}; //Size: 0x0002
+
 class PlayerState
 {
 public:
-	char pad_0000[544]; //0x0000
+	char pad_0000[224]; //0x0000
+	class PlayerController *Owner; //0x00E0
+	char pad_00E8[312]; //0x00E8
 	float Score; //0x0220
 	int32_t PlayerId; //0x0224
 	uint8_t Ping; //0x0228
 	char pad_0229[23]; //0x0229
-	void* SavedNetworkAddress; //0x0240
+	void *SavedNetworkAddress; //0x0240
 	char pad_0248[232]; //0x0248
-	class AbilitySystem* AbilitySystem; //0x0330
-	class SkillManager* SkillManager; //0x0338
+	class AbilitySystem *AbilitySystem; //0x0330
+	class SkillManager *SkillManager; //0x0338
 	class StatManager StatManager; //0x0340
-	class BaseCharacterAttributeSet* BaseCharacterAttributeSet; //0x0348
-	class UpGunWeaponAttributeSet* WeaponAttributeSet; //0x0350
-	char pad_0358[40]; //0x0358
-	UpGunCosmeticSettings CosmeticSettings; //0x0380
-	char pad_0388[95]; //0x0388
+	class BaseCharacterAttributeSet *BaseCharacterAttributeSet; //0x0348
+	class UpGunWeaponAttributeSet *WeaponAttributeSet; //0x0350
+	char pad_0358[24]; //0x0358
+	class UpGunTeamId Team; //0x0370
+	char pad_0372[14]; //0x0372
+	class UpGunCosmeticSettings CosmeticSettings; //0x0380
+	char pad_03D0[23]; //0x03D0
 	int32_t Kills; //0x03E7
 	int32_t Deaths; //0x03EB
 	uint32_t Assists; //0x03EF
+	char pad_03F3[16823]; //0x03F3
 }; //Size: 0x45A3
 
 class AbilitySystem
@@ -395,6 +447,14 @@ public:
 	char pad_00C8[128]; //0x00C8
 }; //Size: 0x0148
 
+class UpGunGameModeEntry
+{
+public:
+	char pad_0000[48]; //0x0000
+	void* GameModeClass; //0x0030
+	void* Name; //0x0038
+	char pad_0040[16]; //0x0040
+}; //Size: 0x0050
 class GameState
 {
 public:
@@ -404,10 +464,9 @@ public:
 	TArray<PlayerState>* PlayerArray; //0x0238
 	char pad_0240[48]; //0x0240
 	class UpGunChatManagerComponent* ChatManager; //0x0270
-	void* GameMode; //0x0278
+	class UpGunGameModeEntry* GameMode; //0x0278
 	void* GameModeSettings; //0x0280
 	char pad_0288[8]; //0x0288
-
 }; //Size: 0x0248
 
 class BaseCharacterAttributeSet

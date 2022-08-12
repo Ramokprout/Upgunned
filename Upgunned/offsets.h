@@ -32,6 +32,7 @@ public :
 	static const int FNamePool = 0x448A040;
 	static const int GetNameStringByIndex = 0x1054B70;
 	static const int FNAMETOSTRING = 0xEE3DF0;
+	static const int FTEXTTOSTRING = 0xE36620;
 	static const int IsServer = 0x2679E00;
 	static const int K2DrawText = 0x2933AF0;
 	static const int ProjectWorldToScreen = 0x2540990;
@@ -41,6 +42,10 @@ public :
 //	static const int GetFovAngle = 0x27782C0;
 #ifdef AESHOOK
 	static const int DecryptData = 0xE69FE0;
+#endif
+
+#ifdef RELOADHOOK
+	static const int Reload = 0xD67740;
 #endif
 
 	inline void Initialize() {
@@ -53,6 +58,7 @@ public :
 					GETOFFSET(Address, ImageBase, this->StaticConstructObject_internal, Native::StaticConstructObject_internal, "StaticConstructObject_internal")
 					GETOFFSET(Address, ImageBase, this->SpawnObject, Native::SpawnObject, "SpawnObject")
 					GETOFFSET(Address, ImageBase, this->FNAMETOSTRING, Native::FNameToString, "FNameToString")
+					GETOFFSET(Address, ImageBase, this->FTEXTTOSTRING, Native::FTEXTTOSTRING, "FTEXTTOSTRING")
 					GETOFFSET(Address, ImageBase, this->K2DrawLine, Native::K2_DrawLine, "K2_DrawLine")
 					GETOFFSET(Address, ImageBase, this->K2DrawBox, Native::K2_DrawBox, "K2_DrawBox")
 					GETOFFSET(Address, ImageBase, this->K2DrawText, Native::K2_DrawText, "K2_DrawText")
@@ -67,9 +73,12 @@ public :
 #ifdef AESHOOK
 					GETOFFSET(Address, ImageBase, this->DecryptData, Native::DecryptData, "DecryptData")
 #endif
+#ifdef RELOADHOOK
+					GETOFFSET(Address, ImageBase, this->Reload, Native::Reload, "AUpGunWeapon::Reload")
+#endif
 					//		GETOFFSET(Address, ImageBase, this->GetFovAngle, Native::GetFovAngle, "GetFovAngle")
 							//GETOFFSET(Address, ImageBase, this->FOV, Native::FOV, "GetFovAngle")
-
+			
 					DETOUR_START
 					DetourAttachE(Native::oProcessEvent, hooks::hkProcessEvent)
 #ifndef DEBUGLOG
@@ -91,6 +100,16 @@ public :
 #ifndef DEBUGLOG
 					std::cout << termcolor::bright_green
 					<< "Hooked DecryptData successfully"
+					<< termcolor::reset
+					<< std::endl;
+#endif
+#endif
+
+#ifdef RELOADHOOK
+				DetourAttachE(Native::Reload, hooks::hkReload);
+#ifndef DEBUGLOG
+				std::cout << termcolor::bright_green
+					<< "Hooked Reload successfully"
 					<< termcolor::reset
 					<< std::endl;
 #endif

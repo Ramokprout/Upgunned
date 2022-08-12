@@ -37,6 +37,7 @@ namespace Globals {
 	//AIMBOT
 	float AimbotFOV = 180;
 	bool renderFOVCircle = false;
+	bool ignoreMates = false;
 	bool AimbotEnabled = false;
 	int AimbotSpeedX = 5;
 	int AimbotSpeedY = 5;
@@ -44,8 +45,10 @@ namespace Globals {
 	//ESP
 	bool boxesESP = false;
 	bool boxesESPVischeck = false;
+	bool boxesESPMates = false;
 	float ESPMaxDistance = 600;
 	float ESPColor[3] = { 255, 0, 0 };
+	float ESPTeamMateColor[3] = { 0, 0, 255 };
 	float ESPVisibleColor[3] = { 0, 255, 0 };
 	//SNAPLINES
 	bool snapLines = false;
@@ -60,6 +63,8 @@ namespace Globals {
 	bool showFPS = false;
 
 	bool bonesESP = false;
+
+
 
 	AimbotKey Aimbot_Key = AimbotKey::MOUSE_R;
 	UpGunBoneIds Aimbot_Pos = UpGunBoneIds::HEAD;

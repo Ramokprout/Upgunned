@@ -153,20 +153,62 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="aimbotBooleans.h" />
+    <ClInclude Include="aimbotKeySelector.h" />
+    <ClInclude Include="aimbotMenu.h" />
+    <ClInclude Include="aimbotmenucomponents.h" />
+    <ClInclude Include="aimbotPosSelector.h" />
+    <ClInclude Include="aimbotSettings.h" />
     <ClInclude Include="d3dhook.h" />
+    <ClInclude Include="debug.h" />
+    <ClInclude Include="debugGamemodeName.h" />
+    <ClInclude Include="debugIsPlayingMME.h" />
+    <ClInclude Include="debugmenucomponents.h" />
+    <ClInclude Include="debugTeam.h" />
+    <ClInclude Include="debugWorldSettings.h" />
+    <ClInclude Include="dumpActors.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="guihelpers.h" />
     <ClInclude Include="guirenderer.h" />
+    <ClInclude Include="guicomponents.h" />
+    <ClInclude Include="guisections.h" />
+    <ClInclude Include="miscMenu.h" />
+    <ClInclude Include="visualBooleans.h" />
+    <ClInclude Include="visualColorSettings.h" />
+    <ClInclude Include="visualDistSettings.h" />
+    <ClInclude Include="visualFOV.h" />
+    <ClInclude Include="visualsmenucomponents.h" />
     <ClInclude Include="hooks.h" />
+    <ClInclude Include="host.h" />
     <ClInclude Include="offsets.h" />
+    <ClInclude Include="PawnCustomTimeDilatation.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PlayerCollapsingHeader.h" />
+    <ClInclude Include="PlayerCollapsingHeaderComponents.h" />
+    <ClInclude Include="PlayerCollapsingHeaderHealthMultiplier.h" />
+    <ClInclude Include="PlayerCollapsingHeaderResetValues.h" />
+    <ClInclude Include="PlayerCollapsingHeaderWalkSpeedMultiplier.h" />
+    <ClInclude Include="printAddresses.h" />
+    <ClInclude Include="tabSelector.h" />
     <ClInclude Include="termcolor.hpp" />
     <ClInclude Include="upgunstructs.h" />
     <ClInclude Include="Native.h" />
     <ClInclude Include="ue4.h" />
     <ClInclude Include="ue4structs.h" />
     <ClInclude Include="util.h" />
+    <ClInclude Include="visualsMenu.h" />
+    <ClInclude Include="WeaponCollapsingHeader.h" />
+    <ClInclude Include="WeaponCollapsingHeaderBulletCriticalHitChanceMultiplier.h" />
+    <ClInclude Include="WeaponCollapsingHeaderBulletDamageMultiplier.h" />
+    <ClInclude Include="WeaponCollapsingHeaderBulletSpeedMultiplier.h" />
+    <ClInclude Include="WeaponCollapsingHeaderComponents.h" />
+    <ClInclude Include="WeaponCollapsingHeaderNoSpread.h" />
+    <ClInclude Include="WeaponCollapsingHeaderResetValues.h" />
+    <ClInclude Include="WeaponCollapsingHeaderRifleFireRateMultiplier.h" />
+    <ClInclude Include="WeaponCollapsingHeaderRifleMagazine.h" />
+    <ClInclude Include="WorldCustomTimeDilatation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
