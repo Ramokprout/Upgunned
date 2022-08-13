@@ -18,7 +18,7 @@ An open-source cheat for [UpGun](https://store.steampowered.com/app/1575870/UpGu
 - Speedhack & more
 ## Todo
 
-- [ ] - Config
+- [x] - Config
 - [ ] - Aim Prediction 
 - [x] - Teams
 ## License
