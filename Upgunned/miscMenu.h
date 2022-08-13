@@ -6,18 +6,12 @@
 #include "Globals.h"
 #include "upgunstructs.h"
 #include "ue4.h"
-
+#include "misccomponents.h"
+#include "config.h"
 namespace miscMenu {
     void Render() {
-        if (ImGui::Button("Build Console")) {
-            ue4::BuildConsole();
-            ue4::BuildCheatManager();
-#ifndef DEBUGLOG
-            std::cout << termcolor::bright_green
-                << "Built UConsole and CheatManager successfully"
-                << termcolor::reset
-                << std::endl;
-#endif
-        }
+        buildConsoleButton::Render();
+        writeConfig::Render();
+        loadConfig::Render();
     }
 }

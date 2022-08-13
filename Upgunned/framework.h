@@ -9,6 +9,7 @@
 
 #include <string>
 #include <fstream>
+#include <filesystem>
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -24,6 +25,10 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_internal.h>
 #include <imgui_impl_win32.h>
+#include "json.hpp"
+
+#include "ImGuiFileDialog/ImGuiFileDialog.h"
+
 #ifndef DEBUGLOG
 #include "termcolor.hpp"
 #include <iostream>

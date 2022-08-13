@@ -46,6 +46,15 @@
     <Filter Include="Header Files\GUI\sections\host\PlayerCollapsingHeader">
       <UniqueIdentifier>{47f96955-001d-41c8-97d6-85e83618cf2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GUI\sections\misc">
+      <UniqueIdentifier>{3e6a847a-72d7-4a67-8be1-ef2b7685a51c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imguifiledialog">
+      <UniqueIdentifier>{802dafb6-86bd-4d18-a758-3c29ebb5fd2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\imguifiledialog">
+      <UniqueIdentifier>{57ef70e0-f91a-4aab-863f-4d514f35d860}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -216,6 +225,30 @@
     <ClInclude Include="debugIsPlayingMME.h">
       <Filter>Header Files\GUI\sections\debug</Filter>
     </ClInclude>
+    <ClInclude Include="misccomponents.h">
+      <Filter>Header Files\GUI\sections\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="buildConsole.h">
+      <Filter>Header Files\GUI\sections\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>Header Files\imguifiledialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>Header Files\imguifiledialog</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Header Files\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="loadConfig.h">
+      <Filter>Header Files\GUI\sections\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="writeConfig.h">
+      <Filter>Header Files\GUI\sections\misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -241,6 +274,9 @@
     </ClCompile>
     <ClCompile Include="..\imgui\imgui_widgets.cpp">
       <Filter>Source Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>Source Files\imguifiledialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

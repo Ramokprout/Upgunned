@@ -159,6 +159,8 @@
     <ClInclude Include="aimbotmenucomponents.h" />
     <ClInclude Include="aimbotPosSelector.h" />
     <ClInclude Include="aimbotSettings.h" />
+    <ClInclude Include="buildConsole.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="d3dhook.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="debugGamemodeName.h" />
@@ -174,6 +176,11 @@
     <ClInclude Include="guirenderer.h" />
     <ClInclude Include="guicomponents.h" />
     <ClInclude Include="guisections.h" />
+    <ClInclude Include="ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="loadConfig.h" />
+    <ClInclude Include="misccomponents.h" />
     <ClInclude Include="miscMenu.h" />
     <ClInclude Include="visualBooleans.h" />
     <ClInclude Include="visualColorSettings.h" />
@@ -209,6 +216,7 @@
     <ClInclude Include="WeaponCollapsingHeaderRifleFireRateMultiplier.h" />
     <ClInclude Include="WeaponCollapsingHeaderRifleMagazine.h" />
     <ClInclude Include="WorldCustomTimeDilatation.h" />
+    <ClInclude Include="writeConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -218,6 +226,7 @@
     <ClCompile Include="..\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
