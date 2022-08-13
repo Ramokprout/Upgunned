@@ -26,6 +26,7 @@ private :
 public:
 
 	static bool GameStarted() {
+		if (UpgunnedEngine::GetWorldName().contains(L"MainMenu")) return false;
 		return UpgunnedEngine::GetWorld()->GameState->GameMode != nullptr;
 	}
 

@@ -28,6 +28,12 @@ public:
 		auto GameMode = (UObject*)UpgunnedEngine::GetWorld()->GameState;
 		auto GameModeName = GameMode->GetName();
 		return std::wstring(GameModeName);
+	}	
+	
+	static std::wstring GetWorldName() {
+		auto World = (UObject*)UpgunnedEngine::GetWorld();
+		auto WorldName = World->GetName();
+		return std::wstring(WorldName);
 	}
 
 	
